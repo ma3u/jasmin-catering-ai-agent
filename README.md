@@ -87,6 +87,54 @@ Here are two possible plans for the technical implementation of the AI Agent sol
 *   **Concept:** Starting with a simpler automation that covers only parts of the process.
 *   **Implementation Steps:** Focusing on automatically extracting the main inquiry data (number of guests, date, location) and using the GPT-4o API to generate a *raw draft* of an offer based on a simpler template and the extracted main data. This raw draft is then sent to the Jasmin Catering team for *manual review, adjustment, and finalization* before going to the customer. This reduces the automation goal but minimizes the complexity of the logic for the "3 Angebote / Packages" and allows for a quicker start. This could be a first step before moving to Plan 1 or 2.
 
+## 🚀 Next Development Steps: Email Agent Integration
+
+The next phase will extend the solution to include automated email handling capabilities, allowing the AI agent to read incoming customer emails and send automated responses directly through the existing Jasmin Catering email system.
+
+### Email Agent Integration with Azure AI Foundry
+
+To connect an email agent from Azure AI Foundry that can read incoming emails and send responses to customers using the 1&1-hosted email (info@jasmincatering.com), three main components need integration:
+
+* **Azure AI Foundry Agent Service** (for AI automation)
+* **1&1 (IONOS) email** (for receiving and sending emails)  
+* **Connector/integration logic** to bridge the email system and AI agent
+
+### Implementation Steps:
+
+**1. Set Up Azure AI Foundry Agent Service**
+* Create an Azure AI Foundry resource and project in Azure subscription
+* Use Azure AI Foundry Agent Service to build and deploy an agent for text processing, response generation, and workflow automation
+* Customize the agent to handle email content, classify messages, and generate replies
+
+**2. Configure Email Access (1&1/IONOS)**
+Configure standard email protocols to allow agent email access:
+* **IMAP/POP3**: For reading incoming emails
+* **SMTP**: For sending emails
+
+**Typical 1&1/IONOS Settings:**
+* SMTP server: `smtp.1and1.com` (Port: 587 TLS or 465 SSL)
+* IMAP server: `imap.1and1.com` (Port: 993 SSL)
+* Username: info@jasmincatering.com
+
+**3. Integration Logic Implementation**
+Implement middleware layer using Azure Functions, Logic Apps, or custom application:
+* Poll 1&1 mailbox using IMAP for new emails
+* Forward email content to Azure AI Foundry Agent via API/SDK
+* Receive agent's generated response
+* Send response back to customer using SMTP
+
+**4. Workflow Process**
+1. New email arrives at info@jasmincatering.com
+2. Integration logic detects email via IMAP
+3. Email content sent to Azure AI Foundry Agent Service
+4. Agent processes email and generates reply
+5. Integration logic sends reply using SMTP
+
+**5. Security & Monitoring**
+* Store email credentials securely using Azure Key Vault
+* Implement Azure monitoring for agent performance and email flows
+* Ensure scalable, production-ready orchestration with built-in security
+
 ## ⚠️ Important Notes
 
 *   The **detailed structure of the "3 Angebote / Packages" and the associated price calculation rules** are essential for automated offer creation but are not fully documented in the provided sources. This is a critical requirement that must be precisely defined at the beginning of the project.
@@ -183,6 +231,54 @@ Hier werden zwei mögliche Pläne für die technische Umsetzung der KI-Agenten-L
 
 *   **Konzept:** Beginn mit einer einfacheren Automatisierung, die nur Teile des Prozesses abdeckt.
 *   **Implementierungsschritte:** Fokussierung auf die automatische Extraktion der Hauptanfragedaten (Gästezahl, Datum, Ort) und Nutzung der GPT-4o API, um einen *Rohentwurf* eines Angebots zu generieren, der auf einer simpleren Vorlage und den extrahierten Hauptdaten basiert. Dieser Rohentwurf wird dann an das Jasmin Catering Team zur *manuellen Überprüfung, Anpassung und Fertigstellung* gesendet, bevor er an den Kunden geht. Dies reduziert das Automatisierungsziel, minimiert aber die Komplexität der Logik für die "3 Angebote / Packages" und erlaubt einen schnelleren Start. Dies könnte ein erster Schritt sein, bevor zu Plan 1 oder 2 übergegangen wird.
+
+## 🚀 Nächste Entwicklungsschritte: E-Mail-Agent Integration
+
+Die nächste Phase wird die Lösung um automatisierte E-Mail-Bearbeitungsfunktionen erweitern, wodurch der KI-Agent eingehende Kunden-E-Mails lesen und automatisierte Antworten direkt über das bestehende Jasmin Catering E-Mail-System senden kann.
+
+### E-Mail-Agent Integration mit Azure AI Foundry
+
+Um einen E-Mail-Agenten von Azure AI Foundry zu verbinden, der eingehende E-Mails lesen und Antworten an Kunden über die 1&1-gehostete E-Mail (info@jasmincatering.com) senden kann, müssen drei Hauptkomponenten integriert werden:
+
+* **Azure AI Foundry Agent Service** (für KI-Automatisierung)
+* **1&1 (IONOS) E-Mail** (zum Empfangen und Versenden von E-Mails)
+* **Connector/Integrationslogik** zur Verbindung von E-Mail-System und KI-Agent
+
+### Implementierungsschritte:
+
+**1. Azure AI Foundry Agent Service einrichten**
+* Azure AI Foundry Ressource und Projekt in Azure-Abonnement erstellen
+* Azure AI Foundry Agent Service nutzen zum Aufbau und Deployment eines Agenten für Textverarbeitung, Antwortgenerierung und Workflow-Automatisierung
+* Agent anpassen für E-Mail-Inhaltsbearbeitung, Nachrichtenklassifizierung und Antwortgenerierung
+
+**2. E-Mail-Zugang konfigurieren (1&1/IONOS)**
+Standard-E-Mail-Protokolle konfigurieren für Agent-E-Mail-Zugang:
+* **IMAP/POP3**: Zum Lesen eingehender E-Mails
+* **SMTP**: Zum Versenden von E-Mails
+
+**Typische 1&1/IONOS Einstellungen:**
+* SMTP-Server: `smtp.1and1.com` (Port: 587 TLS oder 465 SSL)
+* IMAP-Server: `imap.1and1.com` (Port: 993 SSL)
+* Benutzername: info@jasmincatering.com
+
+**3. Integrationslogik implementieren**
+Middleware-Schicht mit Azure Functions, Logic Apps oder benutzerdefinierter Anwendung implementieren:
+* 1&1-Postfach über IMAP auf neue E-Mails abfragen
+* E-Mail-Inhalt an Azure AI Foundry Agent über API/SDK weiterleiten
+* Generierte Antwort des Agenten empfangen
+* Antwort über SMTP an Kunden zurücksenden
+
+**4. Workflow-Prozess**
+1. Neue E-Mail trifft bei info@jasmincatering.com ein
+2. Integrationslogik erkennt E-Mail über IMAP
+3. E-Mail-Inhalt an Azure AI Foundry Agent Service gesendet
+4. Agent verarbeitet E-Mail und generiert Antwort
+5. Integrationslogik sendet Antwort über SMTP
+
+**5. Sicherheit & Monitoring**
+* E-Mail-Zugangsdaten sicher mit Azure Key Vault speichern
+* Azure-Monitoring für Agent-Performance und E-Mail-Flows implementieren
+* Skalierbare, produktionsreife Orchestrierung mit integrierter Sicherheit gewährleisten
 
 ## ⚠️ Wichtige Hinweise
 
