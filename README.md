@@ -195,6 +195,77 @@ Use these settings in your integration logic:
 
 This approach ensures your agent can reliably interact with Gmail for development and testing.
 
+## ⚙️ Configuring Gmail with Azure Logic Apps
+
+Azure Logic Apps can be used to send emails dynamically by setting up a robust workflow that receives variable information and uses it to compose email content.
+
+### Step 1: Create Azure Logic App Resource
+* Navigate to the **Azure portal** and create a new Logic App resource
+* Select a **blank logic app** to start from scratch
+* Choose an appropriate resource group and location for your deployment
+
+### Step 2: Configure HTTP Request Trigger
+* Add a **"When a HTTP request is received" trigger** to initiate the logic app
+* This trigger allows the logic app to be called by external APIs
+* Set the HTTP method to **POST**
+* A unique URL for API calls will be generated once the logic app is saved
+
+### Step 3: Define Request Body Structure
+For dynamic email content, configure the logic app to receive:
+* **Recipient's email address** (`to`)
+* **Email subject** (`subject`) 
+* **Email body content** (`email_body`)
+
+**Best Practice:** Use the **"use sample payload" feature** with a JSON example:
+```json
+{
+  "to": "customer@example.com",
+  "subject": "Your Catering Offer",
+  "email_body": "Dear customer, here is your personalized offer..."
+}
+```
+This automatically generates the necessary payload definition for the HTTP trigger.
+
+### Step 4: Add Gmail Connector
+* Add a new step after the HTTP trigger
+* Select the **Gmail connector** from available connectors
+* Choose the **"Send email" action**
+
+### Step 5: Establish Gmail Connection
+* **First-time setup:** Provide a connection name and **sign in to your Gmail account**
+* Grant the Logic App necessary permissions to send emails on your behalf
+* The connection will be reused for future email sends
+
+### Step 6: Configure Dynamic Email Fields
+* In the "Send email" action, you'll see fields for "To," "Subject," and "Body"
+* Use the **"Add Dynamic content" wizard** to populate these fields
+* From the "When a HTTP request is received" section, **drag and drop**:
+  * `to` property → "To" field
+  * `subject` property → "Subject" field  
+  * `email_body` property → "Body" field
+* Set additional parameters like "Importance" to static values (e.g., "High")
+
+### Step 7: Testing and Implementation
+* **Save the logic app** to generate the request URL
+* **Copy the generated request URL** for testing
+* Use tools like **Postman** to send POST requests with JSON payload:
+
+```json
+{
+  "to": "test@example.com",
+  "subject": "Test Email Subject",
+  "email_body": "This is a test email with <br>line breaks and <b>HTML formatting</b>"
+}
+```
+
+### Advanced Features
+The `email_body` property supports **HTML formatting**, allowing for:
+* **Line breaks** using `<br>` tags
+* **HTML tables** using `<table>`, `<tr>`, and `<td>` tags
+* **Rich formatting** with standard HTML tags for bold, italic, lists, etc.
+
+This approach enables **highly flexible and formatted email generation** that can dynamically adapt to different customer inquiries and offer types.
+
 ## ⚠️ Important Notes
 
 *   The **detailed structure of the "3 Angebote / Packages" and the associated price calculation rules** are essential for automated offer creation but are not fully documented in the provided sources. This is a critical requirement that must be precisely defined at the beginning of the project.
