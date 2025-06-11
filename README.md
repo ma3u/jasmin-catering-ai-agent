@@ -151,48 +151,6 @@ To connect your Azure AI Foundry agent to a Gmail address for testing, follow th
 * If you are using a script or app that does not support OAuth2, you may need to enable access for less secure apps (not recommended for production).
 * For secure integration, create an **App Password** (if 2-Step Verification is enabled) or set up OAuth2 credentials in Google Cloud Console.
 
-### 3. Gather IMAP and SMTP Settings
-Use these settings in your integration logic:
-
-| **Setting** | **Value** |
-|-------------|-----------|
-| IMAP server | imap.gmail.com |
-| IMAP port | 993 |
-| IMAP security | SSL/TLS |
-| IMAP username | your-email@gmail.com |
-| IMAP password | your Gmail password or App Password |
-| SMTP server | smtp.gmail.com |
-| SMTP port | 587 (TLS) or 465 (SSL) |
-| SMTP security | TLS/SSL |
-| SMTP username | your-email@gmail.com |
-| SMTP password | your Gmail password or App Password |
-
-### 4. Integrate with the Agent
-* In your integration logic (Azure Function, Logic App, or other), configure the IMAP client to connect to `imap.gmail.com` on port 993 using SSL, authenticating with your Gmail address and password.
-* Configure the SMTP client to connect to `smtp.gmail.com` on port 587 (TLS) or 465 (SSL), also authenticating with your Gmail address and password.
-* Ensure the integration logic can:
-   * Poll the Gmail inbox for new emails.
-   * Forward the content to the Azure AI Foundry agent for processing.
-   * Receive the agent's response and send it via SMTP back to the original sender.
-
-### 5. Test the Connection
-* Send a test email to your Gmail address.
-* Confirm your integration logic can read the email via IMAP.
-* Have the agent generate a response.
-* Confirm the response is sent back to the sender via SMTP.
-
-### 6. Security and Best Practices
-* Use OAuth2 authentication for production systems to comply with Google's security requirements.
-* Store credentials securely (e.g., Azure Key Vault).
-* Monitor for authentication errors or access denials, especially if Google flags the connection as suspicious.
-
-### Summary of Steps
-1. Enable IMAP in Gmail settings.
-2. Set up secure authentication (OAuth2 or App Password).
-3. Use the correct IMAP/SMTP settings for connection.
-4. Configure and test your integration logic for reading and sending emails.
-5. Secure your credentials and monitor access.
-
 This approach ensures your agent can reliably interact with Gmail for development and testing.
 
 ## ⚙️ Configuring Gmail with Azure Logic Apps
