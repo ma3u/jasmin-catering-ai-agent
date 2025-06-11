@@ -258,6 +258,61 @@ This automatically generates the necessary payload definition for the HTTP trigg
 }
 ```
 
+### Integrating the Azure AI Foundry Agent with Logic Apps Workflow
+
+**1. Prerequisites**
+* You have a Logic App (consumption SKU) that already connects to your Gmail inbox and can send emails.
+* Your Azure AI Foundry agent is deployed and configured to generate catering offers based on incoming requests.
+* Both resources are in the same Azure subscription/resource group, or you have the necessary permissions.
+* You have the endpoint and authentication details for your Azure AI Foundry agent.
+
+**2. Assign Permissions (RBAC)**
+* In the Azure portal, go to your Logic App resource.
+* Enable the **System Assigned Managed Identity** (under "Identity").
+* Copy the **Object (principal) ID** of your Logic App.
+* Go to your Azure AI Foundry project (where your agent is hosted).
+* Under **Access control (IAM)**, add a role assignment:
+   * Role: **Azure AI Project Manager** (or as required for agent invocation)
+   * Assign it to the Logic App's principal ID.
+
+**3. Update Your Logic App Workflow**
+
+**A. Trigger: When a new email arrives (Gmail)**
+* This is your existing trigger.
+
+**B. Action: Call Azure AI Foundry Agent**
+* Add a new step after the Gmail trigger.
+* Use the **HTTP** action (or if available, the Azure AI Foundry Agent connector).
+* Configure it to make a POST request to your agent's endpoint.
+   * **URL**: Your agent's REST endpoint (from the Foundry project overview).
+   * **Headers**: Include authentication (bearer token or resource key).
+   * **Body**: Pass the relevant email content (subject, body, sender, etc.) as JSON.
+
+Example JSON body:
+```json
+{
+  "subject": "@{triggerOutputs()?['body/subject']}",
+  "body": "@{triggerOutputs()?['body/body']}",
+  "from": "@{triggerOutputs()?['body/from']}"
+}
+```
+   * If using the official connector, map the fields as prompted.
+
+**C. Action: Send Email with AI Reply**
+* Add another step: **Send email (Gmail)**.
+* In the "To" field, use the sender's email from the original message.
+* In the "Body" and "Subject" fields, use the AI agent's response (from the previous HTTP action's output).
+
+**4. Configure the Agent Tool in Foundry (Optional but Recommended)**
+* In Azure AI Foundry, go to your agent's configuration.
+* Add a new **Action** and select **Logic App** as the tool type.
+* Register your Logic App workflow as a callable action for the agent, specifying the schema for the input/output as needed.
+* This allows the agent to invoke the Logic App directly as part of its toolset, if you want more advanced orchestration.
+
+**5. Test the End-to-End Flow**
+* Send a catering inquiry email to your connected Gmail address.
+* The Logic App should trigger, pass the email content to the AI agent, receive the generated catering offer, and reply to the sender automatically.
+
 ### Advanced Features
 The `email_body` property supports **HTML formatting**, allowing for:
 * **Line breaks** using `<br>` tags
