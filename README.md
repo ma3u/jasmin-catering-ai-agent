@@ -8,45 +8,49 @@ This project aims to automate and optimize the process of handling customer inqu
 
 ## 🎯 Goals
 
-*   **Accelerate Offer Creation:** Reducing the processing time from inquiry to dispatch of the offer. Currently, an offer is aimed to be sent within 72 hours.
-*   **Automate Routine Tasks:** Automatic extraction of relevant information from customer inquiries and generation of structured offer suggestions.
-*   **Improve Efficiency:** Enabling the processing of a larger number of inquiries without a proportional increase in manual effort.
-*   **Integration:** Seamless connection to existing or expandable inquiry forms (website form, Google Form).
-*   **Consistency:** Ensuring that offers and communication adhere to defined standards and templates.
+- **Accelerate Offer Creation:** Reducing the processing time from inquiry to dispatch of the offer. Currently, an offer is aimed to be sent within 72 hours.
+- **Automate Routine Tasks:** Automatic extraction of relevant information from customer inquiries and generation of structured offer suggestions.
+- **Improve Efficiency:** Enabling the processing of a larger number of inquiries without a proportional increase in manual effort.
+- **Integration:** Seamless connection to existing or expandable inquiry forms (website form, Google Form).
+- **Consistency:** Ensuring that offers and communication adhere to defined standards and templates.
+
 
 ## 🏗️ Scope
 
 **In-Scope:**
 
-*   Capturing inquiry data from a provided form (Google Form or website form).
-*   Extraction and processing of key information from the inquiry (date, number of guests, location, food/drink preferences, dietary preferences like vegetarian/vegan, budget, etc.).
-*   Accessing a knowledge base with menu details, package structures, pricing information, and terms and conditions.
-*   Generation of drafts for three different offer variants ("3 Angebote / Packages") based on inquiry details and defined logic.
-*   Formatting the generated offers into an email that matches the template.
-*   Sending the offer email to the customer.
-*   Integration with the GPT-4o API as the chat model for natural language processing.
+- Capturing inquiry data from a provided form (Google Form or website form).
+- Extraction and processing of key information from the inquiry (date, number of guests, location, food/drink preferences, dietary preferences like vegetarian/vegan, budget, etc.).
+- Accessing a knowledge base with menu details, package structures, pricing information, and terms and conditions.
+- Generation of drafts for three different offer variants ("3 Angebote / Packages") based on inquiry details and defined logic.
+- Formatting the generated offers into an email that matches the template.
+- Sending the offer email to the customer.
+- Integration with the GPT-4o API as the chat model for natural language processing.
 
 **Out-of-Scope (initial):**
 
-*   Full conversation with the customer throughout the entire booking process (e.g., clarifying details, changes after sending the offer, payment processing). The agent initially focuses on the first step: Inquiry -> Offer.
-*   Automatic invoicing after offer confirmation (this is currently handled separately).
-*   Complex negotiations or customized offers that significantly deviate from the predefined packages.
-*   Handling cancellations or changes less than 4 days before the event.
-*   Automatic follow-up on unconfirmed offers.
+- Full conversation with the customer throughout the entire booking process (e.g., clarifying details, changes after sending the offer, payment processing). The agent initially focuses on the first step: Inquiry -> Offer.
+- Automatic invoicing after offer confirmation (this is currently handled separately).
+- Complex negotiations or customized offers that significantly deviate from the predefined packages.
+- Handling cancellations or changes less than 4 days before the event.
+- Automatic follow-up on unconfirmed offers.
+
 
 ## 🤝 Key Stakeholders
 
-*   Jasmin Catering Management (Salma Armachi, Fadi Zaim)
-*   Customers of Jasmin Catering
-*   Development Team
+- Jasmin Catering Management (Salma Armachi, Fadi Zaim)
+- Customers of Jasmin Catering
+- Development Team
 
-## 🛠️ Required Technology & Tools
 
-*   **AI Model:** GPT-4o API Key (as specified by the customer).
-*   **Platform for AI Agents/Workflow Automation:** Azure AI Foundry or n8n.
-*   **Database/Knowledge Base:** For storing structured data (menu details, prices, package rules, T&Cs, etc.).
-*   **Email Service:** For reliable sending of emails (e.g., SendGrid, or a dedicated SMTP service).
-*   **Inquiry Capture:** Integration with Google Forms or the existing/expanded website form.
+## 🛠️ Required Technology \& Tools
+
+- **AI Model:** GPT-4o API Key (as specified by the customer).
+- **Platform for AI Agents/Workflow Automation:** Azure AI Foundry or n8n.
+- **Database/Knowledge Base:** For storing structured data (menu details, prices, package rules, T\&Cs, etc.).
+- **Email Service:** For reliable sending of emails (e.g., SendGrid, or a dedicated SMTP service).
+- **Inquiry Capture:** Integration with Google Forms or the existing/expanded website form.
+
 
 ## 🇩🇪 Content Focus (German)
 
@@ -56,36 +60,57 @@ It is important to emphasize that, although the *description* and *technical pla
 
 Here are two possible plans for the technical implementation of the AI Agent solution:
 
-### 1️⃣ Plan 1: Implementation with Azure AI Foundry (Focus on Agent Service & RAG)
+---
 
-*   **Platform:** Microsoft Azure, utilizing Azure AI Foundry services.
-*   **Concept:** Building an intelligent solution based on the Azure Cloud. The focus is on using the Azure AI Agent Service in combination with RAG to retrieve and utilize knowledge from a knowledge base.
-*   **Implementation Steps:**
-    1.  **Inquiry Capture (Ingestion):** Configuration of an input trigger. This could be an Azure Function or Logic App that reacts to a new form submission (e.g., via Google Forms integration or webhook from the website form).
-    2.  **Data Storage & Knowledge Base:** Setting up a knowledge base. This can be a combination of Azure Blob Storage for documents (like T&Cs, references) and a database like Azure SQL Database or Cosmos DB for structured data (menu items, prices, package definitions). This data is prepared for RAG, possibly using Azure AI Search (Indexing).
-    3.  **Azure AI Agent Service:** Configuration and deployment of the main agent on Azure AI Foundry. This agent will be the orchestrator. It receives the inquiry information from the ingestion layer.
-    4.  **Integration GPT-4o:** The Azure AI Agent is configured to use the GPT-4o API as the underlying large language model (LLM). GPT-4o is used to understand complex inquiries, process free text, and provide wording suggestions.
-    5.  **Offer Logic (Offer Generation Logic):** Implementation of the logic that, based on the extracted inquiry data and by querying the knowledge base (via RAG over Azure AI Search), compiles the relevant menu items, quantities, and prices to calculate and structure the three offer variants. This logic can be implemented directly within the agent or in accompanying Azure Functions/Logic Apps.
-    6.  **Email Generation & Sending:** The generated offer text and details are formatted into the email template. An email service (e.g., via Azure Communication Services or SendGrid via Azure Marketplace) is called to send the email to the customer.
-    7.  **Deployment & Monitoring:** Deployment of services in Azure and setup of monitoring and logging to track agent activity and troubleshoot errors.
+### 1️⃣ Plan 1: Implementation with Azure AI Foundry (Focus on Agent Service \& RAG)
+
+- **Platform:** Microsoft Azure, utilizing Azure AI Foundry services.
+- **Concept:** Building an intelligent solution based on the Azure Cloud. The focus is on using the Azure AI Agent Service in combination with RAG to retrieve and utilize knowledge from a knowledge base.
+- **Implementation Steps:**
+
+1. **Inquiry Capture (Ingestion):** Configuration of an input trigger. This could be an Azure Function or Logic App that reacts to a new form submission (e.g., via Google Forms integration or webhook from the website form).
+2. **Data Storage \& Knowledge Base:** Setting up a knowledge base. This can be a combination of Azure Blob Storage for documents (like T\&Cs, references) and a database like Azure SQL Database or Cosmos DB for structured data (menu items, prices, package definitions). This data is prepared for RAG, possibly using Azure AI Search (Indexing).
+3. **Azure AI Agent Service:** Configuration and deployment of the main agent on Azure AI Foundry. This agent will be the orchestrator. It receives the inquiry information from the ingestion layer.
+4. **Integration GPT-4o:** The Azure AI Agent is configured to use the GPT-4o API as the underlying large language model (LLM). GPT-4o is used to understand complex inquiries, process free text, and provide wording suggestions.
+5. **Offer Logic (Offer Generation Logic):** Implementation of the logic that, based on the extracted inquiry data and by querying the knowledge base (via RAG over Azure AI Search), compiles the relevant menu items, quantities, and prices to calculate and structure the three offer variants. This logic can be implemented directly within the agent or in accompanying Azure Functions/Logic Apps.
+6. **Email Generation \& Sending:** The generated offer text and details are formatted into the email template. An email service (e.g., via Azure Communication Services or SendGrid via Azure Marketplace) is called to send the email to the customer.
+7. **Deployment \& Monitoring:** Deployment of services in Azure and setup of monitoring and logging to track agent activity and troubleshoot errors.
+
+
+#### **Agent Settings Example**
+
+
+---
 
 ### 2️⃣ Plan 2: Implementation with n8n (Workflow Automation)
 
-*   **Platform:** n8n (Open Source Workflow Automation Tool, can be self-hosted or used as a cloud service).
-*   **Concept:** Building an automated workflow in n8n that connects various services via APIs.
-*   **Implementation Steps:**
-    1.  **Inquiry Capture (Webhook/Node):** Configuration of an n8n Webhook Node or a specific Node (e.g., Google Forms Node) to capture incoming inquiries.
-    2.  **Data Processing within the Workflow:** Use of various n8n Nodes (e.g., Function Nodes, JSON Nodes) to extract, clean, and structure the data from the form input.
-    3.  **Data Storage (external DB/Sheet):** Storage of menu details, package structures, pricing rules, T&Cs, etc., in an external database (e.g., PostgreSQL, MySQL) or a cloud sheet (Google Sheets, Airtable) that n8n can access via an appropriate Node.
-    4.  **GPT-4o Integration:** Using an HTTP Request Node to call the GPT-4o API. The workflow can use GPT-4o to interpret free-text wishes or generate formulated text blocks for the offer. However, the core logic for selecting menu items and calculation is primarily based on the logic of the n8n workflow accessing the external knowledge base.
-    5.  **Offer Logic within the Workflow:** Building the logic within the n8n workflow using Nodes like IF/ELSE, Function Nodes, Set Nodes, etc., to combine the inquiry data with information from the external data source and calculate and structure the three offers.
-    6.  **Email Generation & Sending:** Formatting the generated offer text and details into an email structure within the workflow. Using an n8n email Node (e.g., SMTP, SendGrid Node) to send the email in the template format.
-    7.  **Deployment & Monitoring:** Deployment of the n8n workflow (self-hosted or cloud) and use of n8n's internal monitoring functions.
+- **Platform:** n8n (Open Source Workflow Automation Tool, can be self-hosted or used as a cloud service).
+- **Concept:** Building an automated workflow in n8n that connects various services via APIs.
+- **Implementation Steps:**
+
+1. **Inquiry Capture (Webhook/Node):** Configuration of an n8n Webhook Node or a specific Node (e.g., Google Forms Node) to capture incoming inquiries.
+2. **Data Processing within the Workflow:** Use of various n8n Nodes (e.g., Function Nodes, JSON Nodes) to extract, clean, and structure the data from the form input.
+3. **Data Storage (external DB/Sheet):** Storage of menu details, package structures, pricing rules, T\&Cs, etc., in an external database (e.g., PostgreSQL, MySQL) or a cloud sheet (Google Sheets, Airtable) that n8n can access via an appropriate Node.
+4. **GPT-4o Integration:** Using an HTTP Request Node to call the GPT-4o API. The workflow can use GPT-4o to interpret free-text wishes or generate formulated text blocks for the offer. However, the core logic for selecting menu items and calculation is primarily based on the logic of the n8n workflow accessing the external knowledge base.
+5. **Offer Logic within the Workflow:** Building the logic within the n8n workflow using Nodes like IF/ELSE, Function Nodes, Set Nodes, etc., to combine the inquiry data with information from the external data source and calculate and structure the three offers.
+6. **Email Generation \& Sending:** Formatting the generated offer text and details into an email structure within the workflow. Using an n8n email Node (e.g., SMTP, SendGrid Node) to send the email in the template format.
+7. **Deployment \& Monitoring:** Deployment of the n8n workflow (self-hosted or cloud) and use of n8n's internal monitoring functions.
+
+
+#### **Logic App Nodes Example**
+
+**First Gmail node (triggers email send):**
+
+**Second Gmail node (sends emails):**
+
+---
 
 ### 3️⃣ Plan 3: Hybrid Approach (Optional / Quick Start)
 
-*   **Concept:** Starting with a simpler automation that covers only parts of the process.
-*   **Implementation Steps:** Focusing on automatically extracting the main inquiry data (number of guests, date, location) and using the GPT-4o API to generate a *raw draft* of an offer based on a simpler template and the extracted main data. This raw draft is then sent to the Jasmin Catering team for *manual review, adjustment, and finalization* before going to the customer. This reduces the automation goal but minimizes the complexity of the logic for the "3 Angebote / Packages" and allows for a quicker start. This could be a first step before moving to Plan 1 or 2.
+- **Concept:** Starting with a simpler automation that covers only parts of the process.
+- **Implementation Steps:** Focusing on automatically extracting the main inquiry data (number of guests, date, location) and using the GPT-4o API to generate a *raw draft* of an offer based on a simpler template and the extracted main data. This raw draft is then sent to the Jasmin Catering team for *manual review, adjustment, and finalization* before going to the customer. This reduces the automation goal but minimizes the complexity of the logic for the "3 Angebote / Packages" and allows for a quicker start. This could be a first step before moving to Plan 1 or 2.
+
+---
 
 ## 🚀 Next Development Steps: Email Agent Integration
 
@@ -93,88 +118,99 @@ The next phase will extend the solution to include automated email handling capa
 
 ### Email Agent Integration with Azure AI Foundry
 
-To connect an email agent from Azure AI Foundry that can read incoming emails and send responses to customers using the 1&1-hosted email (info@jasmincatering.com), three main components need integration:
+To connect an email agent from Azure AI Foundry that can read incoming emails and send responses to customers using the 1\&1-hosted email (info@jasmincatering.com), three main components need integration:
 
-* **Azure AI Foundry Agent Service** (for AI automation)
-* **1&1 (IONOS) email** (for receiving and sending emails)  
-* **Connector/integration logic** to bridge the email system and AI agent
+- **Azure AI Foundry Agent Service** (for AI automation)
+- **1\&1 (IONOS) email** (for receiving and sending emails)
+- **Connector/integration logic** to bridge the email system and AI agent
 
-### Implementation Steps:
 
-**1. Set Up Azure AI Foundry Agent Service**
-* Create an Azure AI Foundry resource and project in Azure subscription
-* Use Azure AI Foundry Agent Service to build and deploy an agent for text processing, response generation, and workflow automation
-* Customize the agent to handle email content, classify messages, and generate replies
+#### Implementation Steps:
 
-**2. Configure Email Access (1&1/IONOS)**
-Configure standard email protocols to allow agent email access:
-* **IMAP/POP3**: For reading incoming emails
-* **SMTP**: For sending emails
+1. **Set Up Azure AI Foundry Agent Service**
+    - Create an Azure AI Foundry resource and project in Azure subscription
+    - Use Azure AI Foundry Agent Service to build and deploy an agent for text processing, response generation, and workflow automation
+    - Customize the agent to handle email content, classify messages, and generate replies
+2. **Configure Email Access (1\&1/IONOS)**
+    - Configure standard email protocols to allow agent email access:
+        - **IMAP/POP3:** For reading incoming emails
+        - **SMTP:** For sending emails
+    - **Typical 1\&1/IONOS Settings:**
+        - SMTP server: `smtp.1and1.com` (Port: 587 TLS or 465 SSL)
+        - IMAP server: `imap.1and1.com` (Port: 993 SSL)
+        - Username: info@jasmincatering.com
+3. **Integration Logic Implementation**
+    - Implement middleware layer using Azure Functions, Logic Apps, or custom application:
+        - Poll 1\&1 mailbox using IMAP for new emails
+        - Forward email content to Azure AI Foundry Agent via API/SDK
+        - Receive agent's generated response
+        - Send response back to customer using SMTP
+4. **Workflow Process**
 
-**Typical 1&1/IONOS Settings:**
-* SMTP server: `smtp.1and1.com` (Port: 587 TLS or 465 SSL)
-* IMAP server: `imap.1and1.com` (Port: 993 SSL)
-* Username: info@jasmincatering.com
+5. New email arrives at info@jasmincatering.com
+6. Integration logic detects email via IMAP
+7. Email content sent to Azure AI Foundry Agent Service
+8. Agent processes email and generates reply
+9. Integration logic sends reply using SMTP
+1. **Security \& Monitoring**
+    - Store email credentials securely using Azure Key Vault
+    - Implement Azure monitoring for agent performance and email flows
+    - Ensure scalable, production-ready orchestration with built-in security
 
-**3. Integration Logic Implementation**
-Implement middleware layer using Azure Functions, Logic Apps, or custom application:
-* Poll 1&1 mailbox using IMAP for new emails
-* Forward email content to Azure AI Foundry Agent via API/SDK
-* Receive agent's generated response
-* Send response back to customer using SMTP
-
-**4. Workflow Process**
-1. New email arrives at info@jasmincatering.com
-2. Integration logic detects email via IMAP
-3. Email content sent to Azure AI Foundry Agent Service
-4. Agent processes email and generates reply
-5. Integration logic sends reply using SMTP
-
-**5. Security & Monitoring**
-* Store email credentials securely using Azure Key Vault
-* Implement Azure monitoring for agent performance and email flows
-* Ensure scalable, production-ready orchestration with built-in security
+---
 
 ## 📧 Configure Email Access for Gmail (Testing Phase)
 
 To connect your Azure AI Foundry agent to a Gmail address for testing, follow these detailed steps to ensure the agent can both read incoming emails and send responses.
 
 ### 1. Prepare Your Gmail Account
-* Log in to your Gmail account via a web browser.
-* Click the gear icon (⚙️) in the top right and select **See all settings**.
-* Go to the **Forwarding and POP/IMAP** tab.
-* In the **IMAP access** section, select **Enable IMAP**.
-* Click **Save Changes** at the bottom of the page.
+
+- Log in to your Gmail account via a web browser.
+- Click the gear icon (⚙️) in the top right and select **See all settings**.
+- Go to the **Forwarding and POP/IMAP** tab.
+- In the **IMAP access** section, select **Enable IMAP**.
+- Click **Save Changes** at the bottom of the page.
+
 
 ### 2. Allow Third-Party Access
-* By default, Gmail may block less secure app access. For most modern integrations, you should use OAuth2 authentication.
-* If you are using a script or app that does not support OAuth2, you may need to enable access for less secure apps (not recommended for production).
-* For secure integration, create an **App Password** (if 2-Step Verification is enabled) or set up OAuth2 credentials in Google Cloud Console.
+
+- By default, Gmail may block less secure app access. For most modern integrations, you should use OAuth2 authentication.
+- If you are using a script or app that does not support OAuth2, you may need to enable access for less secure apps (not recommended for production).
+- For secure integration, create an **App Password** (if 2-Step Verification is enabled) or set up OAuth2 credentials in Google Cloud Console.
 
 This approach ensures your agent can reliably interact with Gmail for development and testing.
+
+---
 
 ## ⚙️ Configuring Gmail with Azure Logic Apps
 
 Azure Logic Apps can be used to send emails dynamically by setting up a robust workflow that receives variable information and uses it to compose email content.
 
 ### Step 1: Create Azure Logic App Resource
-* Navigate to the **Azure portal** and create a new Logic App resource
-* Select a **blank logic app** to start from scratch
-* Choose an appropriate resource group and location for your deployment
+
+- Navigate to the **Azure portal** and create a new Logic App resource
+- Select a **blank logic app** to start from scratch
+- Choose an appropriate resource group and location for your deployment
+
 
 ### Step 2: Configure HTTP Request Trigger
-* Add a **"When a HTTP request is received" trigger** to initiate the logic app
-* This trigger allows the logic app to be called by external APIs
-* Set the HTTP method to **POST**
-* A unique URL for API calls will be generated once the logic app is saved
+
+- Add a **"When a HTTP request is received" trigger** to initiate the logic app
+- This trigger allows the logic app to be called by external APIs
+- Set the HTTP method to **POST**
+- A unique URL for API calls will be generated once the logic app is saved
+
 
 ### Step 3: Define Request Body Structure
+
 For dynamic email content, configure the logic app to receive:
-* **Recipient's email address** (`to`)
-* **Email subject** (`subject`) 
-* **Email body content** (`email_body`)
+
+- **Recipient's email address** (`to`)
+- **Email subject** (`subject`)
+- **Email body content** (`email_body`)
 
 **Best Practice:** Use the **"use sample payload" feature** with a JSON example:
+
 ```json
 {
   "to": "customer@example.com",
@@ -182,31 +218,39 @@ For dynamic email content, configure the logic app to receive:
   "email_body": "Dear customer, here is your personalized offer..."
 }
 ```
+
 This automatically generates the necessary payload definition for the HTTP trigger.
 
 ### Step 4: Add Gmail Connector
-* Add a new step after the HTTP trigger
-* Select the **Gmail connector** from available connectors
-* Choose the **"Send email" action**
+
+- Add a new step after the HTTP trigger
+- Select the **Gmail connector** from available connectors
+- Choose the **"Send email" action**
+
 
 ### Step 5: Establish Gmail Connection
-* **First-time setup:** Provide a connection name and **sign in to your Gmail account**
-* Grant the Logic App necessary permissions to send emails on your behalf
-* The connection will be reused for future email sends
+
+- **First-time setup:** Provide a connection name and **sign in to your Gmail account**
+- Grant the Logic App necessary permissions to send emails on your behalf
+- The connection will be reused for future email sends
+
 
 ### Step 6: Configure Dynamic Email Fields
-* In the "Send email" action, you'll see fields for "To," "Subject," and "Body"
-* Use the **"Add Dynamic content" wizard** to populate these fields
-* From the "When a HTTP request is received" section, **drag and drop**:
-  * `to` property → "To" field
-  * `subject` property → "Subject" field  
-  * `email_body` property → "Body" field
-* Set additional parameters like "Importance" to static values (e.g., "High")
+
+- In the "Send email" action, you'll see fields for "To," "Subject," and "Body"
+- Use the **"Add Dynamic content" wizard** to populate these fields
+- From the "When a HTTP request is received" section, **drag and drop**:
+    - `to` property → "To" field
+    - `subject` property → "Subject" field
+    - `email_body` property → "Body" field
+- Set additional parameters like "Importance" to static values (e.g., "High")
+
 
 ### Step 7: Testing and Implementation
-* **Save the logic app** to generate the request URL
-* **Copy the generated request URL** for testing
-* Use tools like **Postman** to send POST requests with JSON payload:
+
+- **Save the logic app** to generate the request URL
+- **Copy the generated request URL** for testing
+- Use tools like **Postman** to send POST requests with JSON payload:
 
 ```json
 {
@@ -215,6 +259,58 @@ This automatically generates the necessary payload definition for the HTTP trigg
   "email_body": "This is a test email with <br>line breaks and <b>HTML formatting</b>"
 }
 ```
+
+---
+
+## 🧪 Testing the Agent
+
+After configuring the system, the agent was tested with a real-world scenario:
+
+**Test Query:**
+
+> Hello, I need your help. We have an anniversary celebration in central Berlin on 29 of June 2025, there will be 30 persons, we need 4 meals with 30-45 minute pauses between them and soft drinks plus sparkling and classic white and red wine. Please suggest me an option. Thank you. Best, Ian
+
+**Agent Response:**
+
+> Dear Ian,
+>
+> Thank you for contacting Jasmin Catering for your upcoming anniversary celebration in central Berlin. Here are three tailored options for your event:
+>
+> **Option 1: A Classic Experience**
+> - Humus with Love (our unique vegan recipe), Mutabal (smoked eggplant purée with yogurt and tahini), and marinated mozzarella with sun-dried tomatoes and pesto (vegetarian).
+> - Vegan Kufta (mixed vegetable balls with tomato sauce) and Falafel cups with parsley, tomatoes, pickles, and tahini (vegetarian).
+> - Spinach and Olive Burek (vegan) or Cup Veggies with mushrooms and carrots, with or without cheese.
+> - Dessert: Mini cakes or Malakieh (pastries topped with pistachios, cashews, almonds - vegetarian).
+>
+> Drinks: 18 glasses of white wine, 12 of red wine. Soft drinks selection: still water, sparkling water, orange juice, and apple juice.
+>
+> **Option 2: Deluxe Vegetarian**
+> - Lentil soup with fried dough and lemon garnish, or fresh mushrooms soup with mozzarella and fried humus.
+> - Spiced vegetarian wraps: Mutabal eggplant purée, vegetable cups with mushrooms, and falafel balls in tomato sauce.
+> - Warm spinach and olive Burek or Grilled vegetable bites.
+> - Dessert: Agweh butter cookies with date filling or Berry Cream cups.
+>
+> Drinks: The same wine and soft drink offerings as Option 1.
+>
+> **Option 3: Royal Feast**
+> - Finger food platters: mixed salads, Mutabal eggplant purée with tahini, and hummus spreads.
+> - Hearty main course: Spiced vegetable wraps, mushroom-stuffed cups, and lentil-stuffed bread.
+> - Warm dishes: Vegan kofta or spinach burek.
+> - Dessert: Berry tartlets or Malakieh "Queen's Delight".
+>
+> Drinks: As per the prior offerings.
+>
+> If you'd like to mix-and-match components from each option or add extra servings, do let me know. We can also provide service personnel, table setups, and additional equipment as needed.
+>
+> Looking forward to your confirmation, and for any questions or customization requests, feel free to reach out!
+>
+> Best regards,
+> [Your Name]
+> Jasmin Catering Team
+
+**Agent Testing Example:**
+
+---
 
 ### Integrating the Azure AI Foundry Agent with Logic Apps Workflow
 
