@@ -77,9 +77,6 @@ Here are two possible plans for the technical implementation of the AI Agent sol
 7. **Deployment \& Monitoring:** Deployment of services in Azure and setup of monitoring and logging to track agent activity and troubleshoot errors.
 
 
-#### **Agent Settings Example**
-
-
 ---
 
 ### 2️⃣ Plan 2: Implementation with n8n (Workflow Automation)
