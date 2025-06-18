@@ -94,12 +94,6 @@ Here are two possible plans for the technical implementation of the AI Agent sol
 7. **Deployment \& Monitoring:** Deployment of the n8n workflow (self-hosted or cloud) and use of n8n's internal monitoring functions.
 
 
-#### **Logic App Nodes Example**
-
-![First Gmail Node in Logic App](pictures/node_http_request.jpg)
-
-![Second Gmail Node in Logic App](pictures/node_gmail.jpg)
-
 ---
 
 ### 3️⃣ Plan 3: Hybrid Approach (Optional / Quick Start)
