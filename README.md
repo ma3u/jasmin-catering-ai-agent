@@ -99,9 +99,9 @@ Here are two possible plans for the technical implementation of the AI Agent sol
 
 #### **Logic App Nodes Example**
 
-**First Gmail node (triggers email send):**
+![First Gmail Node in Logic App](pictures/node_http_request node (original trigger):**
 
-**Second Gmail node (sends emails):**
+![Second Gmail Node in Logic App](pictures/node_gmail node (sends emails):**
 
 ---
 
@@ -131,6 +131,9 @@ To connect an email agent from Azure AI Foundry that can read incoming emails an
     - Create an Azure AI Foundry resource and project in Azure subscription
     - Use Azure AI Foundry Agent Service to build and deploy an agent for text processing, response generation, and workflow automation
     - Customize the agent to handle email content, classify messages, and generate replies
+
+![Azure AI AGent](pictures/agent.jpg)
+
 2. **Configure Email Access (1\&1/IONOS)**
     - Configure standard email protocols to allow agent email access:
         - **IMAP/POP3:** For reading incoming emails
@@ -200,6 +203,7 @@ Azure Logic Apps can be used to send emails dynamically by setting up a robust w
 - Set the HTTP method to **POST**
 - A unique URL for API calls will be generated once the logic app is saved
 
+![First Node with the http Request Trigger](pictures/node_http_request.jpg)
 
 ### Step 3: Define Request Body Structure
 
@@ -218,6 +222,7 @@ For dynamic email content, configure the logic app to receive:
   "email_body": "Dear customer, here is your personalized offer..."
 }
 ```
+![Second: Gmail Node](pictures/node_gmail.jpg)
 
 This automatically generates the necessary payload definition for the HTTP trigger.
 
@@ -263,6 +268,8 @@ This automatically generates the necessary payload definition for the HTTP trigg
 ---
 
 ## 🧪 Testing the Agent
+
+![Agent Testing Example](pictures/agent_testing.jpg)   
 
 After configuring the system, the agent was tested with a real-world scenario:
 
