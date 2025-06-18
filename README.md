@@ -99,9 +99,9 @@ Here are two possible plans for the technical implementation of the AI Agent sol
 
 #### **Logic App Nodes Example**
 
-![First Gmail Node in Logic App](pictures/node_http_request node (original trigger):**
+![First Gmail Node in Logic App](pictures/node_http_request.jpg)
 
-![Second Gmail Node in Logic App](pictures/node_gmail node (sends emails):**
+![Second Gmail Node in Logic App](pictures/node_gmail.jpg)
 
 ---
 
