@@ -51,14 +51,31 @@ GOOGLE_ACCOUNT=$(gcloud auth list --filter=status:ACTIVE --format="value(account
 echo "✅ Authenticated as: $GOOGLE_ACCOUNT"
 echo ""
 
-# Set project configuration
-PROJECT_ID="jasmin-catering-logicapp-$(date +%s)"
+# Set project configuration (Google Cloud project ID constraints: 6-30 chars, lowercase, start with letter)
+TIMESTAMP=$(date +%s | tail -c 8)  # Last 7 digits of timestamp
+PROJECT_ID="jasmin-catering-${TIMESTAMP}"
 PROJECT_NAME="Jasmin Catering LogicApp"
 
+# Ensure project ID is valid
+if [ ${#PROJECT_ID} -gt 30 ]; then
+    PROJECT_ID="jasmin-cat-${TIMESTAMP}"
+fi
+
 echo "📋 Project Configuration:"
-echo "   Project ID: $PROJECT_ID"
+echo "   Project ID: $PROJECT_ID (${#PROJECT_ID} characters)"
 echo "   Project Name: $PROJECT_NAME"
 echo ""
+
+# Validate project ID
+if [ ${#PROJECT_ID} -lt 6 ] || [ ${#PROJECT_ID} -gt 30 ]; then
+    echo "❌ Error: Project ID must be 6-30 characters"
+    exit 1
+fi
+
+if [[ ! "$PROJECT_ID" =~ ^[a-z][a-z0-9-]*$ ]]; then
+    echo "❌ Error: Project ID must start with lowercase letter and contain only lowercase letters, digits, and hyphens"
+    exit 1
+fi
 
 read -p "Create new project? (Y/n): " CREATE_PROJECT
 if [[ ! "$CREATE_PROJECT" =~ ^[Nn]$ ]]; then
