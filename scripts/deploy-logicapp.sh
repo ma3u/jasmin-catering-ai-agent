@@ -78,11 +78,18 @@ EOF
 
 # Update the LogicApp workflow
 echo "⚙️ Updating LogicApp workflow..."
-az logicapp update \
+
+# Create the complete workflow definition with parameters
+jq --argjson connections "$(cat logicapp/workflow-parameters.json | jq '."\$connections".value')" \
+   '.parameters."\$connections".defaultValue = $connections' \
+   logicapp/workflow-definition.json > logicapp/complete-workflow.json
+
+# Update the LogicApp using az resource update
+az resource update \
   --resource-group $RESOURCE_GROUP \
+  --resource-type "Microsoft.Logic/workflows" \
   --name $LOGIC_APP_NAME \
-  --definition logicapp/workflow-definition.json \
-  --parameters logicapp/workflow-parameters.json
+  --set properties.definition="$(cat logicapp/complete-workflow.json)"
 echo "✅ Deployment completed!"
 echo ""
 echo "📋 Next steps:"
