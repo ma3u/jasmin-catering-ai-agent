@@ -50,7 +50,7 @@ After deployment, the script provides direct Azure Portal links:
 
 ### **3. Test the Integration**
 ```bash
-# Send test email to mabu.mate@gmail.com
+# Send test email to trigger workflow
 # Check #gmail-inbox channel in Slack workspace
 # Expected: Formatted message with email details
 ```
@@ -88,19 +88,127 @@ Preview: Hello, we need catering for 150 guests on March 15th...
 
 ---
 
-## 🏗️ **Architecture Overview**
+## 🏗️ **Architecture: Azure AI Foundry Implementation**
 
-### **Current Implementation:**
-- **Azure LogicApps**: Email processing and Slack notifications
-- **Gmail API**: Email monitoring (`mabu.mate@gmail.com`)
+### **Implementation Plan: Azure AI Foundry + RAG**
+
+**Platform:** Microsoft Azure, utilizing Azure AI Foundry services for intelligent automation.
+
+**Concept:** Building an AI-powered solution based on Azure Cloud, focusing on the Azure AI Agent Service combined with RAG (Retrieval-Augmented Generation) to retrieve and utilize knowledge from our Syrian fusion catering knowledge base.
+
+### **Phase 1: Current - Email Processing Pipeline** ✅
+- **Azure LogicApps**: Email monitoring and Slack notifications
+- **Gmail API**: Email ingestion (`mabu.mate@gmail.com`)
 - **Slack API**: Team notifications (`mabured.slack.com`)
 - **GitHub**: Version control and automated backups
 
-### **Next Phase - AI Integration:**
-- **Azure AI Foundry**: Natural language processing and offer generation
-- **RAG System**: Menu knowledge base and pricing logic
-- **German Templates**: Professional customer communication
-- **Automated Responses**: 3 customized catering packages per inquiry
+### **Phase 2: AI Agent Integration** 🔄
+- **Azure AI Foundry Agent Service**: Main orchestration and intelligence
+- **Azure AI Search**: RAG-enabled knowledge base indexing
+- **GPT-4o Integration**: Natural language processing for German communication
+- **Azure Functions**: Supporting logic for offer calculations
+
+### **Phase 3: Knowledge Base & RAG** 🔄
+- **Azure Blob Storage**: Documents (T&Cs, references, menu descriptions)
+- **Azure SQL Database**: Structured data (menu items, prices, package definitions)
+- **Azure AI Search**: Indexing for RAG queries
+- **Knowledge Management**: Syrian fusion specialties, pricing logic, German templates
+
+### **Phase 4: Production Automation** 🔄
+- **Azure Communication Services**: Professional email sending
+- **Azure Monitor**: Logging and performance tracking
+- **Azure Key Vault**: Secure credential management
+- **Production Email**: Migration to `info@jasmincatering.com`
+
+---
+
+## 🔗 **Azure Endpoints & Integration URLs**
+
+### **Current Azure Resources:**
+```
+Subscription: b58b1820-35f0-4271-99be-7c84d4dd40f3
+Resource Group: logicapp-jasmin-catering_group
+Location: West Europe
+```
+
+### **LogicApp Endpoints:**
+```
+LogicApp Resource:
+/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/logicapp-jasmin-catering_group/providers/Microsoft.Logic/workflows/mabu-logicapps
+
+Management Portal:
+https://portal.azure.com/#@damyandesignhotmail.onmicrosoft.com/resource/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/logicapp-jasmin-catering_group/providers/Microsoft.Logic/workflows/mabu-logicapps
+```
+
+### **API Connections:**
+```
+Gmail Connection:
+/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/logicapp-jasmin-catering_group/providers/Microsoft.Web/connections/gmail-mabu-mate
+
+Slack Connection:
+/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/logicapp-jasmin-catering_group/providers/Microsoft.Web/connections/slack-mabured
+```
+
+### **Azure AI Foundry Project:**
+```
+Project URL:
+https://ai.azure.com/foundryProject/overview?wsid=/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/rg-damyandesign-1172/providers/Microsoft.CognitiveServices/accounts/jasmin-catering-resource/projects/jasmin-catering&tid=6aa73eee-cf67-47a8-8231-d97cdb4b21a0
+
+Resource Group: rg-damyandesign-1172
+AI Services Account: jasmin-catering-resource
+Project: jasmin-catering
+```
+
+### **Azure REST API Endpoints:**
+```
+LogicApp Management:
+https://management.azure.com/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.Logic/workflows/{workflow-name}
+
+Azure AI Foundry:
+https://management.azure.com/subscriptions/{subscription-id}/resourceGroups/{resource-group}/providers/Microsoft.CognitiveServices/accounts/{account-name}
+
+Azure AI Search (Future):
+https://{search-service}.search.windows.net/
+```
+
+---
+
+## 📚 **Azure Integration Guides & Documentation**
+
+### **Official Microsoft Documentation:**
+
+#### **Azure Logic Apps + AI Foundry Integration:**
+- [**Azure Logic Apps Overview**](https://docs.microsoft.com/en-us/azure/logic-apps/)
+- [**Connect Logic Apps to AI Services**](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-connect-ai-services)
+- [**Azure AI Foundry Documentation**](https://docs.microsoft.com/en-us/azure/ai-foundry/)
+- [**AI Agent Service Integration**](https://docs.microsoft.com/en-us/azure/ai-foundry/agents/)
+
+#### **Email Integration with Gmail:**
+- [**Gmail Connector for Logic Apps**](https://docs.microsoft.com/en-us/connectors/gmail/)
+- [**Email Triggers and Actions**](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-email-connectors)
+- [**OAuth Authentication Setup**](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-securing-a-logic-app#oauth-authentication)
+
+#### **RAG and Knowledge Base Setup:**
+- [**Azure AI Search for RAG**](https://docs.microsoft.com/en-us/azure/search/search-what-is-azure-search)
+- [**Document Intelligence Service**](https://docs.microsoft.com/en-us/azure/applied-ai-services/form-recognizer/)
+- [**Azure OpenAI Integration**](https://docs.microsoft.com/en-us/azure/cognitive-services/openai/)
+
+#### **Monitoring and Management:**
+- [**Azure Monitor for Logic Apps**](https://docs.microsoft.com/en-us/azure/logic-apps/monitor-logic-apps)
+- [**Azure Application Insights**](https://docs.microsoft.com/en-us/azure/azure-monitor/app/app-insights-overview)
+- [**Azure CLI for Logic Apps**](https://docs.microsoft.com/en-us/cli/azure/logicapp)
+
+### **Practical Implementation Guides:**
+
+#### **Step-by-Step Tutorials:**
+- [**Tutorial: Create automated workflows with Logic Apps**](https://docs.microsoft.com/en-us/azure/logic-apps/tutorial-build-automated-recurring-workflows)
+- [**Tutorial: Process emails with AI services**](https://docs.microsoft.com/en-us/azure/logic-apps/tutorial-process-email-attachments-workflow)
+- [**Tutorial: Build a chatbot with Azure AI**](https://docs.microsoft.com/en-us/azure/ai-foundry/tutorials/chatbot)
+
+#### **Integration Patterns:**
+- [**Enterprise Integration Patterns**](https://docs.microsoft.com/en-us/azure/logic-apps/logic-apps-enterprise-integration-overview)
+- [**Serverless Computing Patterns**](https://docs.microsoft.com/en-us/azure/azure-functions/functions-best-practices)
+- [**Event-Driven Architecture**](https://docs.microsoft.com/en-us/azure/architecture/guide/architecture-styles/event-driven)
 
 ---
 
@@ -112,16 +220,18 @@ Preview: Hello, we need catering for 150 guests on March 15th...
 - **LogicApp**: `mabu-logicapps`
 - **Location**: `West Europe`
 
-### **Email & Communication:**
-- **Gmail**: `mabu.mate@gmail.com` (monitored)
+### **Email & Communication (Starting with Gmail):**
+- **Gmail**: `mabu.mate@gmail.com` (monitored) ✅ **Current Focus**
 - **Slack Workspace**: `mabured.slack.com`
 - **Slack Channel**: `#gmail-inbox`
-- **Future Email**: `info@jasmincatering.com` (production)
+- **Future Email**: `info@jasmincatering.com` (production migration)
 
-### **AI Foundry Project:**
-```
-https://ai.azure.com/foundryProject/overview?wsid=/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/rg-damyandesign-1172/providers/Microsoft.CognitiveServices/accounts/jasmin-catering-resource/projects/jasmin-catering&tid=6aa73eee-cf67-47a8-8231-d97cdb4b21a0
-```
+**Why Gmail First?** 
+- ✅ **Easier OAuth Integration**: Gmail API has excellent Azure Logic Apps connector
+- ✅ **Simplified Authentication**: Google OAuth is well-documented and reliable
+- ✅ **Testing Environment**: Perfect for development and validation
+- ✅ **Rapid Prototyping**: Quick setup allows faster iteration
+- ✅ **Cost Effective**: No additional email hosting costs during development
 
 ---
 
@@ -183,37 +293,43 @@ az logicapp run list --resource-group logicapp-jasmin-catering_group --name mabu
 
 ---
 
-## 🔮 **Roadmap & Next Steps**
+## 🔮 **Implementation Roadmap**
 
-### **Phase 1: ✅ Email Integration (Current)**
+### **Phase 1: ✅ Gmail Integration (Current)**
 - [x] Gmail to Slack forwarding
 - [x] LogicApp workflow deployment
 - [x] OAuth authentication setup
 - [x] GitHub version control
 
-### **Phase 2: 🔄 AI Agent Development**
-- [ ] Azure AI Foundry agent integration
-- [ ] RAG system for menu knowledge base
-- [ ] German language template system
-- [ ] Automated inquiry parsing
+### **Phase 2: 🔄 Azure AI Foundry Integration**
+- [ ] Deploy AI Agent Service
+- [ ] Connect LogicApp to AI Foundry
+- [ ] Implement German language processing
+- [ ] Create inquiry parsing logic
 
-### **Phase 3: 🔄 Automated Offer Generation**
-- [ ] 3-package offer generation logic
-- [ ] Dynamic pricing calculations
-- [ ] Professional German email templates
+### **Phase 3: 🔄 Knowledge Base & RAG**
+- [ ] Set up Azure AI Search
+- [ ] Index Syrian fusion menu database
+- [ ] Implement pricing calculation logic
+- [ ] Create German email templates
+
+### **Phase 4: 🔄 Automated Offer Generation**
+- [ ] 3-package offer generation system
+- [ ] Dynamic pricing based on guest count
+- [ ] Professional German email formatting
 - [ ] Customer response automation
 
-### **Phase 4: 🔄 Production Deployment**
-- [ ] Migration to `info@jasmincatering.com`
+### **Phase 5: 🔄 Production Migration**
+- [ ] Migrate to `info@jasmincatering.com`
+- [ ] Production-grade monitoring
 - [ ] Customer feedback integration
-- [ ] Analytics and reporting
 - [ ] Scale testing for high volume
 
 ---
 
 ## 🧪 **Testing & Validation**
 
-### **Current Testing:**
+### **Current Testing (Gmail Focus):**
 ```bash
 # Test email trigger
 echo "Send email to: mabu.mate@gmail.com"
@@ -223,7 +339,7 @@ echo "Verify formatted message appears"
 
 ### **AI Agent Testing Example:**
 **Sample Customer Inquiry:**
-> "Hello, I need catering for an anniversary celebration in central Berlin on June 29, 2025. There will be 30 people, we need 4 meals with 30-45 minute pauses and drinks including wine."
+> "Hallo, ich benötige Catering für eine Jubiläumsfeier in Berlin-Mitte am 29. Juni 2025. Es werden 30 Personen sein, wir brauchen 4 Mahlzeiten mit 30-45 Minuten Pausen und Getränke inklusive Wein."
 
 **Expected AI Response:** Professional German offer with 3 package options including Syrian fusion specialties, pricing, and service details.
 
@@ -244,6 +360,7 @@ echo "Verify formatted message appears"
 - **GitHub Repository**: [ma3u/jasmin-catering-ai-agent](https://github.com/ma3u/jasmin-catering-ai-agent)
 - **Azure Portal**: [LogicApp Dashboard](https://portal.azure.com/#@damyandesignhotmail.onmicrosoft.com/resource/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/logicapp-jasmin-catering_group/providers/Microsoft.Logic/workflows/mabu-logicapps)
 - **Slack Workspace**: `mabured.slack.com #gmail-inbox`
+- **Detailed Setup**: [Deployment Guide](docs/deployment-guide.md)
 
 ---
 
