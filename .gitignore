@@ -1,0 +1,29 @@
+# Azure and LogicApp files
+*.log
+*.tmp
+workflow-parameters.json
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Node modules (if we add Node.js components later)
+node_modules/
+npm-debug.log
+
+# Environment variables
+.env
+.env.local
+
+# Backup files
+*.backup
+*.bak
+
+# Azure CLI temp files
+.azure/

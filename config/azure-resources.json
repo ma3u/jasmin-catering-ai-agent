@@ -1,0 +1,10 @@
+{
+  "subscription_id": "b58b1820-35f0-4271-99be-7c84d4dd40f3",
+  "resource_group": "logicapp-jasmin-catering_group",
+  "logic_app_name": "mabu-logicapps",
+  "location": "West Europe",
+  "gmail_account": "mabu.mate@gmail.com",
+  "slack_workspace": "mabured.slack.com",
+  "slack_channel": "#gmail-inbox",
+  "ai_foundry_project": "https://ai.azure.com/foundryProject/overview?wsid=/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/rg-damyandesign-1172/providers/Microsoft.CognitiveServices/accounts/jasmin-catering-resource/projects/jasmin-catering&tid=6aa73eee-cf67-47a8-8231-d97cdb4b21a0"
+}

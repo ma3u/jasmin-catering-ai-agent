@@ -1,0 +1,115 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "$connections": {
+      "defaultValue": {},
+      "type": "Object"
+    }
+  },
+  "triggers": {
+    "When_a_new_email_arrives_(V3)": {
+      "type": "ApiConnectionWebhook",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['gmail']['connectionId']"
+          }
+        },
+        "body": {
+          "EmailAddress": "mabu.mate@gmail.com"
+        },
+        "path": "/v3/Mail/OnNewEmail"
+      },
+      "splitOn": "@triggerBody()?['value']"
+    }
+  },  "actions": {
+    "Parse_Email_Content": {
+      "type": "Compose",
+      "inputs": {
+        "emailId": "@triggerBody()?['id']",
+        "subject": "@triggerBody()?['subject']",
+        "from": "@triggerBody()?['from']",
+        "body": "@triggerBody()?['body']",
+        "receivedDateTime": "@triggerBody()?['receivedDateTime']",
+        "bodyPreview": "@triggerBody()?['bodyPreview']"
+      },
+      "runAfter": {}
+    },
+    "Format_Slack_Message": {
+      "type": "Compose",
+      "inputs": {
+        "text": "📧 New Email Received",
+        "blocks": [
+          {
+            "type": "header",
+            "text": {
+              "type": "plain_text",
+              "text": "📧 New Email for Jasmin Catering"
+            }
+          },
+          {
+            "type": "section",
+            "fields": [
+              {
+                "type": "mrkdwn",
+                "text": "*From:* @{triggerBody()?['from']}"
+              },
+              {
+                "type": "mrkdwn",
+                "text": "*Subject:* @{triggerBody()?['subject']}"
+              },              {
+                "type": "mrkdwn",
+                "text": "*Received:* @{triggerBody()?['receivedDateTime']}"
+              },
+              {
+                "type": "mrkdwn",
+                "text": "*Email ID:* @{triggerBody()?['id']}"
+              }
+            ]
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "*Preview:*\n@{triggerBody()?['bodyPreview']}"
+            }
+          },
+          {
+            "type": "divider"
+          },
+          {
+            "type": "section",
+            "text": {
+              "type": "mrkdwn",
+              "text": "🤖 *Next Steps:* This email will be processed by the Jasmin Catering AI Agent for automatic quote generation."
+            }
+          }
+        ]
+      },
+      "runAfter": {
+        "Parse_Email_Content": ["Succeeded"]
+      }
+    },    "Send_Slack_Message": {
+      "type": "ApiConnection",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['slack']['connectionId']"
+          }
+        },
+        "method": "post",
+        "path": "/v1/chat.postMessage",
+        "body": {
+          "channel": "#gmail-inbox",
+          "text": "@{outputs('Format_Slack_Message')?['text']}",
+          "blocks": "@{outputs('Format_Slack_Message')?['blocks']}"
+        }
+      },
+      "runAfter": {
+        "Format_Slack_Message": ["Succeeded"]
+      }
+    }
+  },
+  "outputs": {}
+}
