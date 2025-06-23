@@ -211,32 +211,25 @@ cd jasmin-catering-ai-agent/ai-foundry-email-processor
 - Configure AI integration
 - Set up email monitoring
 
-### **Step 3: Manual Configuration in Azure Portal**
+### **Testing & Monitoring** 🧪
 
-#### **A. Authorize Email Connection**
-1. Go to [Azure Portal](https://portal.azure.com)
-2. Navigate to: Resource Groups > `logicapp-jasmin-catering_group`
-3. Find API Connections > `webde-imap-connection`
-4. Click "Edit API connection"
-5. Enter web.de credentials:
-   - Username: `matthias.buchhorn@web.de`
-   - Password: Your app-specific password
-6. Test connection
+```bash
+# Check deployment status
+az logic workflow show \
+  --resource-group logicapp-jasmin-catering_group \
+  --name jasmin-order-processor \
+  --query state
 
-#### **B. Set Up Teams Integration**
-1. In API Connections > `teams-connection`
-2. Click "Authorize" and sign in with Microsoft account
-3. Select the workspace and channel for notifications
+# Monitor runs
+az logic workflow run list \
+  --resource-group logicapp-jasmin-catering_group \
+  --name jasmin-order-processor \
+  --output table
 
-#### **C. Configure AI Foundry Agent**
-1. Go to [Azure AI Studio](https://ai.azure.com)
-2. Select project: `jasmin-catering`
-3. Navigate to "Agents" or "Deployments"
-4. Create new agent:
-   - Name: `order-processing-agent`
-   - Model: `gpt-4o`
-   - Upload: `ai-foundry/agent-instructions.txt`
-   - Upload knowledge base from: `ai-foundry/knowledge-base/`
+# Test email
+# Send to: ma3u-test@email.de
+# Subject: "Catering Anfrage"
+```
 
 ### **Step 4: Test the System**
 
