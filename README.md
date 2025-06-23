@@ -184,6 +184,216 @@ Ihren besonderen Tag! 🇸🇾❤️🇩🇪
 - **Azure Key Vault**: Secure credential management
 - **Production Email**: Migration to `info@jasmincatering.com`
 
-# 🔧 **Developer Section: Azure Functions Architecture**
+# 🔧 **Developer Section: AI Foundry Order Processing Setup**
+
+## **Complete Setup Guide for AI-Powered Order Processing**
+
+### **Prerequisites**
+- Azure subscription with credits
+- Azure CLI installed (`brew install azure-cli`)
+- Access to existing Azure resources (from `.env`)
+- Microsoft Teams access for approvals
+- web.de email account credentials
+
+### **Step 1: Clone and Setup Project**
+```bash
+# Clone the repository
+git clone [your-repo-url]
+cd jasmin-catering-ai-agent
+
+# Verify environment configuration exists
+cat .env | grep AZURE_SUBSCRIPTION_ID
+```
+
+### **Step 2: Deploy AI Foundry Order Processing System**
+
+#### **A. Navigate to AI Foundry implementation**
+```bash
+cd ai-foundry-email-processor
+```
+
+#### **B. Run setup scripts in order**
+```bash
+# 1. Verify Azure configuration from parent .env
+./scripts/load-env-config.sh
+
+# 2. Deploy AI Foundry agent (requires manual steps in Azure Portal)
+./scripts/setup-agent.sh
+
+# 3. Deploy Logic Apps workflow
+./scripts/deploy-workflow.sh
+
+# 4. Configure API connections
+./scripts/configure-connections.sh
+```
+
+### **Step 3: Manual Configuration in Azure Portal**
+
+#### **A. Authorize Email Connection**
+1. Go to [Azure Portal](https://portal.azure.com)
+2. Navigate to: Resource Groups > `logicapp-jasmin-catering_group`
+3. Find API Connections > `webde-imap-connection`
+4. Click "Edit API connection"
+5. Enter web.de credentials:
+   - Username: `matthias.buchhorn@web.de`
+   - Password: Your app-specific password
+6. Test connection
+
+#### **B. Set Up Teams Integration**
+1. In API Connections > `teams-connection`
+2. Click "Authorize" and sign in with Microsoft account
+3. Select the workspace and channel for notifications
+
+#### **C. Configure AI Foundry Agent**
+1. Go to [Azure AI Studio](https://ai.azure.com)
+2. Select project: `jasmin-catering`
+3. Navigate to "Agents" or "Deployments"
+4. Create new agent:
+   - Name: `order-processing-agent`
+   - Model: `gpt-4o`
+   - Upload: `ai-foundry/agent-instructions.txt`
+   - Upload knowledge base from: `ai-foundry/knowledge-base/`
+
+### **Step 4: Test the System**
+
+#### **A. Send Test Email**
+```bash
+# Use test script
+./scripts/test-workflow.sh
+
+# Or manually send email to: matthias.buchhorn@web.de
+# Subject must contain: "Catering" or "Anfrage"
+```
+
+#### **B. Monitor Processing**
+```bash
+# Check Logic App runs
+az logic workflow run list \
+  --resource-group logicapp-jasmin-catering_group \
+  --workflow-name jasmin-order-processor \
+  --output table
+
+# View specific run details
+az logic workflow run show \
+  --resource-group logicapp-jasmin-catering_group \
+  --workflow-name jasmin-order-processor \
+  --run-name [RUN_ID]
+```
+
+#### **C. Verify Teams Notification**
+- Check Teams channel for approval card
+- Test "Approve & Send" button
+- Verify email response is sent
+
+### **Step 5: Development Workflow**
+
+#### **A. Updating AI Agent Behavior**
+```bash
+# 1. Edit agent instructions
+nano ai-foundry/agent-instructions.txt
+
+# 2. Update knowledge base
+nano ai-foundry/knowledge-base/company-policies.md
+
+# 3. Re-deploy agent
+./scripts/setup-agent.sh
+```
+
+#### **B. Modifying Logic Apps Workflow**
+```bash
+# 1. Edit workflow definition
+nano logic-app/order-processing-workflow.json
+
+# 2. Deploy changes
+./scripts/deploy-workflow.sh
+```
+
+#### **C. Adding New Response Templates**
+1. Edit `ai-foundry/knowledge-base/order-templates.md`
+2. Add new template following existing format
+3. Re-deploy agent to update knowledge base
+
+### **Step 6: Debugging and Troubleshooting**
+
+#### **A. Common Issues**
+```bash
+# Email not triggering
+az resource show \
+  --resource-group logicapp-jasmin-catering_group \
+  --resource-type "Microsoft.Web/connections" \
+  --name "webde-imap-connection" \
+  --query "properties.statuses[0]"
+
+# AI agent errors
+curl -X POST https://jasmin-catering.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01 \
+  -H "api-key: YOUR_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"Test"}]}'
+```
+
+#### **B. View Logs**
+```bash
+# Application Insights logs (if configured)
+az monitor app-insights query \
+  --app [APP_INSIGHTS_NAME] \
+  --query "traces | where message contains 'order-processing'"
+```
+
+### **Step 7: Production Deployment**
+
+#### **A. Environment Variables**
+```bash
+# Production .env additions
+ENVIRONMENT=production
+EMAIL_USERNAME=info@jasmincatering.com
+EMAIL_CHECK_INTERVAL=300  # 5 minutes
+AI_MAX_TOKENS=2000
+AI_TEMPERATURE=0.3  # Lower for consistency
+```
+
+#### **B. Security Checklist**
+- [ ] Store all secrets in Azure Key Vault
+- [ ] Enable managed identity for Logic Apps
+- [ ] Restrict API connection access
+- [ ] Enable audit logging
+- [ ] Set up monitoring alerts
+
+#### **C. Performance Optimization**
+- Adjust Logic App trigger frequency
+- Implement caching for common responses
+- Set appropriate timeouts
+- Monitor AI token usage
+
+### **Architecture Diagram**
+```
+┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
+│   web.de Email  │────▶│  Logic Apps      │────▶│  AI Foundry     │
+│   (IMAP)        │     │  Workflow        │     │  Agent (GPT-4)  │
+└─────────────────┘     └──────────────────┘     └─────────────────┘
+                               │                           │
+                               ▼                           ▼
+                        ┌──────────────────┐     ┌─────────────────┐
+                        │  Teams           │     │  Knowledge Base │
+                        │  Notification    │     │  (RAG)          │
+                        └──────────────────┘     └─────────────────┘
+                               │
+                               ▼
+                        ┌──────────────────┐
+                        │  Email Response  │
+                        │  (SMTP)          │
+                        └──────────────────┘
+```
+
+### **Cost Estimation**
+- Logic Apps: ~€20-50/month (based on runs)
+- AI Foundry: ~€50-100/month (based on tokens)
+- Storage: ~€5/month
+- Total: ~€75-155/month for moderate usage
+
+### **Scaling Considerations**
+- For >1000 emails/month: Consider Logic Apps Standard
+- For multiple languages: Add language detection
+- For complex menus: Enhance knowledge base
+- For analytics: Add Power BI integration
 
 ## **Current Implementation Overview**

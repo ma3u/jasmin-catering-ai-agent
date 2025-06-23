@@ -1,0 +1,323 @@
+{
+  "$schema": "https://schema.management.azure.com/providers/Microsoft.Logic/schemas/2016-06-01/workflowdefinition.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "$connections": {
+      "defaultValue": {},
+      "type": "Object"
+    }
+  },
+  "triggers": {
+    "When_a_new_email_arrives": {
+      "type": "ApiConnection",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['webde']['connectionId']"
+          }
+        },
+        "method": "get",
+        "path": "/v2/Mail/OnNewEmail",
+        "queries": {
+          "folderPath": "Inbox",
+          "importance": "Any",
+          "fetchOnlyWithAttachment": false,
+          "includeAttachments": true,
+          "toFilter": "ma3u-test@email.de",
+          "subjectFilter": "@or(contains(triggerBody()?['Subject'], 'order'), contains(triggerBody()?['Subject'], 'bestell'), contains(triggerBody()?['Subject'], 'anfrage'), contains(triggerBody()?['Subject'], 'catering'), contains(triggerBody()?['Subject'], 'event'))"
+        }
+      },
+      "recurrence": {
+        "frequency": "Minute",
+        "interval": 5
+      },
+      "splitOn": "@triggerBody()?['value']"
+    }
+  },
+  "actions": {
+    "Initialize_Draft_ID": {
+      "type": "InitializeVariable",
+      "inputs": {
+        "variables": [
+          {
+            "name": "DraftId",
+            "type": "string",
+            "value": "@{concat('draft-', formatDateTime(utcNow(), 'yyyyMMdd-HHmmss'), '-', guid())}"
+          }
+        ]
+      },
+      "runAfter": {}
+    },
+    "Parse_Email_Content": {
+      "type": "Compose",
+      "inputs": {
+        "emailSubject": "@triggerBody()?['Subject']",
+        "emailFrom": "@triggerBody()?['From']",
+        "emailBody": "@triggerBody()?['Body']",
+        "receivedTime": "@triggerBody()?['DateTimeReceived']",
+        "hasAttachments": "@triggerBody()?['HasAttachment']",
+        "importance": "@triggerBody()?['Importance']"
+      },
+      "runAfter": {
+        "Initialize_Draft_ID": ["Succeeded"]
+      }
+    },
+    "Call_AI_Foundry_Agent": {
+      "type": "Http",
+      "inputs": {
+        "method": "POST",
+        "uri": "https://jasmin-catering.openai.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01",
+        "headers": {
+          "Content-Type": "application/json",
+          "api-key": "@parameters('AIFoundryApiKey')"
+        },
+        "body": {
+          "messages": [
+            {
+              "role": "system",
+              "content": "You are the Jasmin Catering order processing assistant. Analyze the email and generate a professional response draft in the same language as the original email. Extract all relevant order details and suggest appropriate catering packages."
+            },
+            {
+              "role": "user",
+              "content": "Process this catering inquiry email:\n\nSubject: @{outputs('Parse_Email_Content')?['emailSubject']}\nFrom: @{outputs('Parse_Email_Content')?['emailFrom']}\nReceived: @{outputs('Parse_Email_Content')?['receivedTime']}\n\nEmail Body:\n@{outputs('Parse_Email_Content')?['emailBody']}\n\nPlease provide:\n1. Language of the email (German/English)\n2. Extracted order details (date, guests, location, requirements)\n3. Identified customer needs\n4. Suggested catering package\n5. Any missing information needed\n6. Professional response draft\n7. Priority level (urgent/normal)\n8. Next steps"
+            }
+          ],
+          "temperature": 0.3,
+          "max_tokens": 2000,
+          "top_p": 1,
+          "frequency_penalty": 0,
+          "presence_penalty": 0
+        }
+      },
+      "runAfter": {
+        "Parse_Email_Content": ["Succeeded"]
+      }
+    },
+    "Parse_AI_Response": {
+      "type": "ParseJson",
+      "inputs": {
+        "content": "@body('Call_AI_Foundry_Agent')?['choices'][0]['message']['content']",
+        "schema": {
+          "type": "object",
+          "properties": {
+            "language": { "type": "string" },
+            "orderDetails": {
+              "type": "object",
+              "properties": {
+                "eventDate": { "type": "string" },
+                "guestCount": { "type": "string" },
+                "location": { "type": "string" },
+                "requirements": { "type": "array" }
+              }
+            },
+            "customerNeeds": { "type": "array" },
+            "suggestedPackage": { "type": "string" },
+            "missingInfo": { "type": "array" },
+            "responseDraft": { "type": "string" },
+            "priority": { "type": "string" },
+            "nextSteps": { "type": "array" }
+          }
+        }
+      },
+      "runAfter": {
+        "Call_AI_Foundry_Agent": ["Succeeded"]
+      }
+    },
+    "Store_Draft_in_Storage": {
+      "type": "ApiConnection",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['azureblob']['connectionId']"
+          }
+        },
+        "method": "post",
+        "path": "/v2/datasets/@{encodeURIComponent(encodeURIComponent('AccountNameFromSettings'))}/files",
+        "queries": {
+          "folderPath": "/email-drafts",
+          "name": "@{variables('DraftId')}.json",
+          "queryParametersSingleEncoded": true
+        },
+        "body": {
+          "draftId": "@variables('DraftId')",
+          "originalEmail": {
+            "subject": "@{outputs('Parse_Email_Content')?['emailSubject']}",
+            "from": "@{outputs('Parse_Email_Content')?['emailFrom']}",
+            "body": "@{outputs('Parse_Email_Content')?['emailBody']}",
+            "receivedTime": "@{outputs('Parse_Email_Content')?['receivedTime']}"
+          },
+          "aiAnalysis": {
+            "language": "@{body('Parse_AI_Response')?['language']}",
+            "orderDetails": "@{body('Parse_AI_Response')?['orderDetails']}",
+            "customerNeeds": "@{body('Parse_AI_Response')?['customerNeeds']}",
+            "suggestedPackage": "@{body('Parse_AI_Response')?['suggestedPackage']}",
+            "missingInfo": "@{body('Parse_AI_Response')?['missingInfo']}",
+            "priority": "@{body('Parse_AI_Response')?['priority']}",
+            "nextSteps": "@{body('Parse_AI_Response')?['nextSteps']}"
+          },
+          "draftResponse": "@{body('Parse_AI_Response')?['responseDraft']}",
+          "status": "pending_approval",
+          "createdTime": "@{utcNow()}",
+          "createdBy": "AI-OrderProcessingAgent"
+        }
+      },
+      "runAfter": {
+        "Parse_AI_Response": ["Succeeded"]
+      }
+    },
+    "Send_Teams_Approval_Notification": {
+      "type": "ApiConnection",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['teams']['connectionId']"
+          }
+        },
+        "method": "post",
+        "path": "/v1.0/teams/conversations/messages",
+        "body": {
+          "recipient": "@parameters('TeamsChannelId')",
+          "messageBody": {
+            "contentType": "AdaptiveCard",
+            "content": {
+              "$schema": "http://adaptivecards.io/schemas/adaptive-card.json",
+              "type": "AdaptiveCard",
+              "version": "1.4",
+              "body": [
+                {
+                  "type": "Container",
+                  "style": "emphasis",
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "New Catering Order - Approval Required",
+                      "size": "Large",
+                      "weight": "Bolder",
+                      "color": "Accent"
+                    }
+                  ]
+                },
+                {
+                  "type": "Container",
+                  "separator": true,
+                  "items": [
+                    {
+                      "type": "FactSet",
+                      "facts": [
+                        {
+                          "title": "From:",
+                          "value": "@{outputs('Parse_Email_Content')?['emailFrom']}"
+                        },
+                        {
+                          "title": "Subject:",
+                          "value": "@{outputs('Parse_Email_Content')?['emailSubject']}"
+                        },
+                        {
+                          "title": "Priority:",
+                          "value": "@{body('Parse_AI_Response')?['priority']}"
+                        },
+                        {
+                          "title": "Event Date:",
+                          "value": "@{body('Parse_AI_Response')?['orderDetails']?['eventDate']}"
+                        },
+                        {
+                          "title": "Guests:",
+                          "value": "@{body('Parse_AI_Response')?['orderDetails']?['guestCount']}"
+                        },
+                        {
+                          "title": "Suggested Package:",
+                          "value": "@{body('Parse_AI_Response')?['suggestedPackage']}"
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "type": "Container",
+                  "separator": true,
+                  "items": [
+                    {
+                      "type": "TextBlock",
+                      "text": "Draft Response Preview:",
+                      "weight": "Bolder",
+                      "size": "Medium"
+                    },
+                    {
+                      "type": "TextBlock",
+                      "text": "@{substring(body('Parse_AI_Response')?['responseDraft'], 0, min(length(body('Parse_AI_Response')?['responseDraft']), 500))}...",
+                      "wrap": true,
+                      "maxLines": 10
+                    }
+                  ]
+                }
+              ],
+              "actions": [
+                {
+                  "type": "Action.Submit",
+                  "title": "✅ Approve & Send",
+                  "style": "positive",
+                  "data": {
+                    "action": "approve",
+                    "draftId": "@{variables('DraftId')}"
+                  }
+                },
+                {
+                  "type": "Action.Submit",
+                  "title": "✏️ Edit Draft",
+                  "data": {
+                    "action": "edit",
+                    "draftId": "@{variables('DraftId')}"
+                  }
+                },
+                {
+                  "type": "Action.Submit",
+                  "title": "❌ Reject",
+                  "style": "destructive",
+                  "data": {
+                    "action": "reject",
+                    "draftId": "@{variables('DraftId')}"
+                  }
+                }
+              ]
+            }
+          }
+        }
+      },
+      "runAfter": {
+        "Store_Draft_in_Storage": ["Succeeded"]
+      }
+    },
+    "Log_to_Application_Insights": {
+      "type": "ApiConnection",
+      "inputs": {
+        "host": {
+          "connection": {
+            "name": "@parameters('$connections')['applicationinsights']['connectionId']"
+          }
+        },
+        "method": "post",
+        "path": "/v2/track",
+        "body": {
+          "eventName": "OrderEmailProcessed",
+          "properties": {
+            "draftId": "@variables('DraftId')",
+            "emailFrom": "@{outputs('Parse_Email_Content')?['emailFrom']}",
+            "emailSubject": "@{outputs('Parse_Email_Content')?['emailSubject']}",
+            "priority": "@{body('Parse_AI_Response')?['priority']}",
+            "language": "@{body('Parse_AI_Response')?['language']}",
+            "suggestedPackage": "@{body('Parse_AI_Response')?['suggestedPackage']}",
+            "status": "pending_approval",
+            "workflowRunId": "@{workflow().run.name}"
+          },
+          "measurements": {
+            "processingTimeMs": "@{sub(ticks(utcNow()), ticks(workflow().run.startTime))}"
+          }
+        }
+      },
+      "runAfter": {
+        "Send_Teams_Approval_Notification": ["Succeeded", "Failed"]
+      }
+    }
+  },
+  "outputs": {}
+}
