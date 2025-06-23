@@ -4,6 +4,14 @@
 .env.production
 .env.*
 
+# Azure CLI temporary files
+temp-*.json
+temp-*.yaml
+
+# Azure Developer CLI
+.azure/*/config.json
+.azure/*/environment.json
+
 # Azure credentials
 *.pfx
 *.cer

@@ -44,14 +44,12 @@ if [ "$ACTION" = "create" ]; then
         --resource-group $AZURE_RESOURCE_GROUP \
         --name $LOGIC_APP_NAME \
         --location $AZURE_LOCATION \
-        --definition "@../logic-app/order-processing-workflow.json" \
-        --parameters "@parameters.json"
+        --definition "$(cat ../logic-app/order-processing-workflow.json)"
 else
     az logic workflow update \
         --resource-group $AZURE_RESOURCE_GROUP \
         --name $LOGIC_APP_NAME \
-        --definition "@../logic-app/order-processing-workflow.json" \
-        --parameters "@parameters.json"
+        --definition "$(cat ../logic-app/order-processing-workflow.json)"
 fi
 
 if [ $? -eq 0 ]; then

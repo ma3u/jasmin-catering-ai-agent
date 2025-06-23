@@ -3,7 +3,8 @@
 # Load existing Azure configuration from .env file
 if [ -f "../.env" ]; then
     echo "Loading Azure configuration from .env..."
-    export $(cat ../.env | grep -v '^#' | xargs)
+    # Load only valid environment variables (skip comments and invalid lines)
+    export $(cat ../.env | grep -E '^[A-Z_]+=.*' | grep -v '^#' | xargs)
     echo "✅ Configuration loaded successfully"
     echo "Using Subscription: $AZURE_SUBSCRIPTION_ID"
     echo "Resource Group: $AZURE_RESOURCE_GROUP"

@@ -1,0 +1,33 @@
+name: jasmin-catering-ai
+metadata:
+  template: jasmin-catering-ai@1.0.0
+
+hooks:
+  preprovision:
+    posix:
+      shell: sh
+      run: |
+        echo "Loading configuration from parent .env file..."
+        if [ -f "../.env" ]; then
+          export $(cat ../.env | grep -v '^#' | xargs)
+          
+          # Set azd environment variables from .env
+          azd env set AZURE_AI_API_KEY "$AZURE_AI_API_KEY"
+          azd env set WEBDE_APP_PASSWORD "$WEBDE_APP_PASSWORD"
+          azd env set WEBDE_EMAIL_ALIAS "$WEBDE_EMAIL_ALIAS"
+          azd env set AZURE_AI_ENDPOINT "$AZURE_AI_ENDPOINT"
+          azd env set AZURE_LOCATION "${AZURE_LOCATION:-westeurope}"
+        else
+          echo "ERROR: Parent .env file not found!"
+          exit 1
+        fi
+
+  postprovision:
+    posix:
+      shell: sh
+      run: |
+        echo "✅ Infrastructure provisioned!"
+        echo "Deploying Logic App workflow..."
+        
+        # Deploy the complete workflow
+        ./scripts/deploy-workflow-to-app.sh

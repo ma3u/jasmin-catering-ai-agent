@@ -20,31 +20,30 @@ An intelligent email order processing system for Jasmin Catering using Azure AI 
 
 ## 🚀 Quick Start
 
+### Option 1: Automated Deployment (Recommended)
+```bash
+cd ai-foundry-email-processor
+./scripts/deploy-with-azd.sh
+```
+
+### Option 2: Alternative CLI Deployment
+```bash
+cd ai-foundry-email-processor
+./scripts/deploy-complete.sh
+```
+
+### Option 3: Manual Steps (if needed)
 1. **Verify Configuration**:
    ```bash
-   cd scripts
-   ./load-env-config.sh
+   ./scripts/load-env-config.sh
    ```
 
-2. **Set Up AI Agent**:
+2. **Test AI Connection**:
    ```bash
-   ./setup-agent.sh
+   ./scripts/test-ai-agent.sh [YOUR_API_KEY]
    ```
 
-3. **Deploy Workflow**:
-   ```bash
-   ./deploy-workflow.sh
-   ```
-
-4. **Configure Connections**:
-   ```bash
-   ./configure-connections.sh
-   ```
-
-5. **Test the System**:
-   ```bash
-   ./test-workflow.sh
-   ```
+**See [AUTOMATED_DEPLOYMENT.md](AUTOMATED_DEPLOYMENT.md) for complete instructions.**
 
 ## 📁 Project Structure
 
