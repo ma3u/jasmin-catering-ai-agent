@@ -1,0 +1,51 @@
+# azure.yaml - Azure Developer CLI template for Jasmin Catering
+name: jasmin-catering-logicapp
+metadata:
+  template: jasmin-catering-logicapp@0.0.1-beta
+
+services:
+  logicapp:
+    project: ./logicapp
+    language: json
+    host: logicapp
+
+hooks:
+  predeploy:
+    shell: sh  
+    run: |
+      echo "🔍 Pre-deployment checks..."
+      echo "📧 Gmail account: mabu.mate@gmail.com"
+      echo "💬 Slack workspace: mabured.slack.com"
+      echo "📁 Checking workflow definition..."
+      if [ ! -f "logicapp/workflow-definition.json" ]; then
+        echo "❌ Error: workflow-definition.json not found"
+        exit 1
+      fi
+      echo "✅ Pre-deployment checks passed"
+      
+  postprovision:
+    shell: sh
+    run: |
+      echo "🔗 Setting up API connections..."
+      echo "⚠️  Manual authorization required for OAuth connections:"
+      echo "   📧 Gmail: mabu.mate@gmail.com"
+      echo "   💬 Slack: mabured.slack.com #gmail-inbox"
+      echo ""
+      echo "🔗 Please visit Azure Portal to authorize connections:"
+      echo "   https://portal.azure.com/#@damyandesignhotmail.onmicrosoft.com/resource/subscriptions/b58b1820-35f0-4271-99be-7c84d4dd40f3/resourceGroups/logicapp-jasmin-catering_group"
+      
+  postdeploy:
+    shell: sh
+    run: |
+      echo "✅ Deployment completed!"
+      echo ""
+      echo "🧪 Testing workflow:"
+      echo "   1. Send email to: mabu.mate@gmail.com"
+      echo "   2. Check Slack: mabured.slack.com #gmail-inbox"
+      echo ""
+      echo "💾 Backing up to GitHub..."
+      if [ -f "scripts/backup-to-github.sh" ]; then
+        ./scripts/backup-to-github.sh
+      fi
+      echo ""
+      echo "🎉 Jasmin Catering LogicApp is ready!"
