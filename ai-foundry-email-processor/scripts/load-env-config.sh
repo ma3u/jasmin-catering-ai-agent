@@ -16,7 +16,7 @@ fi
 
 # Set default Azure location if not specified
 if [ -z "$AZURE_LOCATION" ]; then
-    export AZURE_LOCATION="westeurope"
+    export AZURE_LOCATION="northeurope"
     echo "ℹ️  Using default location: $AZURE_LOCATION"
 fi
 

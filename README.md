@@ -184,48 +184,32 @@ Ihren besonderen Tag! 🇸🇾❤️🇩🇪
 - **Azure Key Vault**: Secure credential management
 - **Production Email**: Migration to `info@jasmincatering.com`
 
-# 🔧 **Developer Section: AI Foundry Order Processing Setup**
+# 🔧 **Developer Section: AI Foundry Order Processing**
 
-## **Complete Setup Guide for AI-Powered Order Processing**
+## **Latest Implementation (June 2025)**
 
-### **Prerequisites**
-- Azure subscription with credits
-- Azure CLI installed (`brew install azure-cli`)
-- Access to existing Azure resources (from `.env`)
-- Microsoft Teams access for approvals
-- web.de email account credentials
+### **Current Status** ✅
+- **Deployed**: June 23, 2025
+- **Logic App**: `jasmin-order-processor` (North Europe)  
+- **Email**: `ma3u-test@email.de`
+- **AI**: Azure AI Foundry (GPT-4)
+- **Automation**: Full CLI deployment (no manual steps)
 
-### **Step 1: Clone and Setup Project**
+### **Quick Deployment** 🚀
+
 ```bash
-# Clone the repository
-git clone [your-repo-url]
-cd jasmin-catering-ai-agent
+# Navigate to project
+cd jasmin-catering-ai-agent/ai-foundry-email-processor
 
-# Verify environment configuration exists
-cat .env | grep AZURE_SUBSCRIPTION_ID
+# Run automated deployment (no manual steps!)
+./scripts/deploy-complete.sh
 ```
 
-### **Step 2: Deploy AI Foundry Order Processing System**
-
-#### **A. Navigate to AI Foundry implementation**
-```bash
-cd ai-foundry-email-processor
-```
-
-#### **B. Run setup scripts in order**
-```bash
-# 1. Verify Azure configuration from parent .env
-./scripts/load-env-config.sh
-
-# 2. Deploy AI Foundry agent (requires manual steps in Azure Portal)
-./scripts/setup-agent.sh
-
-# 3. Deploy Logic Apps workflow
-./scripts/deploy-workflow.sh
-
-# 4. Configure API connections
-./scripts/configure-connections.sh
-```
+**That's it!** The script will:
+- Load credentials from `.env`
+- Deploy Logic App to North Europe
+- Configure AI integration
+- Set up email monitoring
 
 ### **Step 3: Manual Configuration in Azure Portal**
 
