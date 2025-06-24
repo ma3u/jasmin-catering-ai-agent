@@ -26,8 +26,10 @@ echo "📍 Region: $AZURE_LOCATION (default: Sweden Central)"
 # Display loaded configuration
 echo "📋 Configuration Summary:"
 echo "- Subscription: ${AZURE_SUBSCRIPTION_ID:0:8}..."
-echo "- AI Service: Azure Cognitive Services"
-echo "- Email Filter: $WEBDE_EMAIL_ALIAS"
+echo "- AI Service: Azure AI Foundry"
+if [ ! -z "${WEBDE_EMAIL_ALIAS:-}" ]; then
+    echo "- Email Filter: $WEBDE_EMAIL_ALIAS"
+fi
 
 # Validate required variables
 required_vars=(
@@ -39,7 +41,8 @@ required_vars=(
 
 missing_vars=()
 for var in "${required_vars[@]}"; do
-    if [ -z "${!var}" ]; then
+    eval "value=\${$var:-}"
+    if [ -z "$value" ]; then
         missing_vars+=("$var")
     fi
 done

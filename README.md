@@ -24,10 +24,20 @@ jasmin-catering-ai-agent/
 ├── deployments/                   # All deployment assets
 │   ├── scripts/                   # Deployment and utility scripts
 │   │   ├── deploy-main.sh        # Main deployment script
+│   │   ├── deploy-ai-foundry.sh  # AI Foundry deployment script
 │   │   ├── load-env-config.sh    # Environment configuration loader
-│   │   └── monitor-logic-app.sh  # Monitoring script
+│   │   ├── monitor-logic-app.sh  # Monitoring script
+│   │   └── send-test-email.sh    # Test email information script
 │   ├── logic-apps/               # Logic App workflow definitions
 │   │   └── email-processor-workflow.json
+│   ├── terraform/                # Infrastructure as Code (Terraform)
+│   │   ├── main.tf              # Main Terraform configuration
+│   │   ├── variables.tf         # Variable definitions
+│   │   ├── outputs.tf           # Output definitions
+│   │   ├── logic_app_complete.tf # Complete Logic App deployment
+│   │   ├── terraform.tfvars.example # Example variables file
+│   │   ├── README.md            # Terraform documentation
+│   │   └── .gitignore           # Terraform-specific ignores
 │   └── templates/                # Email templates and examples
 │       └── email-draft-example.md
 └── docs/                         # Additional documentation
@@ -99,7 +109,9 @@ cd deployments/scripts
 
 ---
 
-## 🔧 **Deployment Scripts**
+## 🔧 **Deployment Options**
+
+### **Option 1: Shell Scripts (Quick Start)**
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
@@ -107,6 +119,37 @@ cd deployments/scripts
 | `deploy-main.sh` | Basic deployment script | `./deploy-main.sh` |
 | `load-env-config.sh` | Loads environment configuration | Sourced by other scripts |
 | `monitor-logic-app.sh` | Monitors Logic App runs | `./monitor-logic-app.sh` |
+| `send-test-email.sh` | Shows test email configuration | `./send-test-email.sh` |
+
+### **Option 2: Terraform (Infrastructure as Code)**
+
+For production deployments, use the Terraform configuration in `deployments/terraform/`:
+
+```bash
+cd deployments/terraform
+
+# Initialize Terraform
+terraform init
+
+# Copy and configure variables
+cp terraform.tfvars.example terraform.tfvars
+# Edit terraform.tfvars with your values
+
+# Plan deployment
+terraform plan
+
+# Apply configuration
+terraform apply
+```
+
+**Benefits of Terraform:**
+- Declarative infrastructure definition
+- State management and version control
+- Easy rollback and disaster recovery
+- Better team collaboration
+- Modular and reusable code
+
+See `deployments/terraform/README.md` for detailed Terraform documentation.
 
 ### **deploy-ai-foundry.sh**
 - Deploys with Azure AI Foundry project configuration
@@ -236,23 +279,131 @@ Each generated response is stored as a draft:
 }
 ```
 
-### **Example Input Email:**
+### **Complete Example Workflow:**
+
+#### **1️⃣ Input Email (Received)**
 ```
 From: kunde@example.com
 To: ma3u-test@email.de
 Subject: Catering Anfrage für Firmenevent
 
 Guten Tag,
-wir planen ein Event für 50 Personen am 15. August 2025 in Berlin.
-Bitte um ein Angebot für syrisches Catering.
+
+wir planen ein Firmenevent für unsere Mitarbeiter und benötigen Catering.
+
+Details:
+- Datum: 15. August 2025
+- Anzahl Personen: 50
+- Ort: Berlin-Mitte, Konferenzraum
+- Zeit: 12:00 - 16:00 Uhr
+- Budget: ca. 2.000 EUR
+
+Wir hätten gerne ein Buffet mit syrischen Spezialitäten. 
+Einige unserer Mitarbeiter sind Vegetarier.
+
+Können Sie uns ein Angebot zusenden?
+
+Mit freundlichen Grüßen,
+Max Mustermann
+Firma GmbH
 ```
 
-### **Generated Response:**
-- Personal greeting in German
-- Syrian fusion menu suggestions
-- Pricing: 50 guests × 40€ = 2,000€
-- Service fee: 15%
-- Total: 2,300€
+#### **2️⃣ AI Analysis (Extracted Data)**
+```json
+{
+  "eventType": "Firmenevent",
+  "eventDate": "15. August 2025",
+  "guestCount": 50,
+  "location": "Berlin-Mitte, Konferenzraum",
+  "timeframe": "12:00 - 16:00 Uhr",
+  "budget": 2000,
+  "cuisine": "Syrische Spezialitäten",
+  "specialRequirements": ["Vegetarische Optionen"],
+  "contactPerson": "Max Mustermann",
+  "company": "Firma GmbH"
+}
+```
+
+#### **3️⃣ Generated Email Draft**
+```
+To: kunde@example.com
+Subject: Re: Catering Anfrage für Firmenevent - Ihr Angebot von Jasmin Catering
+
+Sehr geehrter Herr Mustermann,
+
+vielen Dank für Ihre Anfrage für Ihr Firmenevent am 15. August 2025. 
+Wir freuen uns sehr, Ihnen unser Catering-Angebot präsentieren zu dürfen!
+
+JASMIN CATERING - SYRISCHES BUSINESS BUFFET
+
+Für Ihre 50 Gäste haben wir ein exquisites Menü zusammengestellt:
+
+🥙 VORSPEISEN & MEZZE
+- Hummus Classic & Hummus Beiruti (vegan)
+- Baba Ghanoush (Auberginen-Creme, vegan)
+- Muhammara (Walnuss-Paprika-Dip, vegan)
+- Falafel mit Tahini-Sauce (vegan)
+- Fattoush-Salat (vegan)
+- Gefüllte Weinblätter (vegetarisch)
+
+🍖 HAUPTGERICHTE
+- Shawarma vom Hähnchen mit Knoblauch-Sauce
+- Kafta (gewürzte Lammhackspieße)
+- Maklube (umgedrehter Reis mit Gemüse, vegetarisch)
+- Mousaka auf syrische Art
+
+🍚 BEILAGEN
+- Syrischer Gewürzreis
+- Gegrilltes Gemüse der Saison
+- Frisches Pita-Brot
+
+🍮 DESSERTS
+- Baklava (3 Sorten)
+- Maamoul (Dattelkekse)
+
+💰 IHR ANGEBOT:
+- Business Buffet für 50 Personen: 1.750,00 €
+- Servicegebühr (15%): 262,50 €
+- GESAMTPREIS: 2.012,50 € inkl. MwSt.
+- Anzahlung (30%): 603,75 €
+
+✅ INKLUSIVLEISTUNGEN:
+- Anlieferung nach Berlin-Mitte
+- Professioneller Aufbau
+- Hochwertiges Geschirr & Besteck
+- Service-Personal für 4 Stunden
+- Abbau und Reinigung
+
+Ihr Budget von 2.000 EUR passt perfekt zu unserem Angebot. 
+Die vegetarischen Optionen sind deutlich gekennzeichnet.
+
+Gerne besprechen wir weitere Details telefonisch: +49 30 123 456 789
+
+Mit kulinarischen Grüßen,
+Ihr Jasmin Catering Team
+
+www.jasmincatering.de
+info@jasmincatering.de
+```
+
+#### **4️⃣ Stored Draft Object**
+```json
+{
+  "draftId": "draft-20250624-143022-7891",
+  "status": "ready_for_review",
+  "createdAt": "2025-06-24T14:30:22Z",
+  "originalEmail": { ... },
+  "analysis": { ... },
+  "draftResponse": { ... },
+  "pricing": {
+    "basePrice": 1750.00,
+    "serviceFee": 262.50,
+    "totalPrice": 2012.50,
+    "deposit": 603.75,
+    "pricePerPerson": 35.00
+  }
+}
+```
 
 ---
 
@@ -281,6 +432,31 @@ az logic workflow show \
 ```bash
 ./monitor-logic-app.sh
 ```
+
+### **Test Email Processing:**
+Since the Logic App uses a timer trigger and simulates emails, you can:
+
+1. **View test email information:**
+   ```bash
+   ./deployments/scripts/send-test-email.sh
+   ```
+   This displays the test email configuration and monitoring instructions.
+
+2. **Monitor Logic App runs (real-time):**
+   ```bash
+   # List recent runs
+   az rest --method get \
+     --uri "https://management.azure.com/subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/logicapp-jasmin-sweden_group/providers/Microsoft.Logic/workflows/jasmin-order-processor-sweden/runs?api-version=2019-05-01&\$top=5" \
+     --query "value[0:5].{Name:name,Status:properties.status,StartTime:properties.startTime}" \
+     --output table
+   ```
+
+3. **Check specific run details:**
+   ```bash
+   # Replace [RUN_ID] with actual run ID from above command
+   az rest --method get \
+     --uri "https://management.azure.com/subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/logicapp-jasmin-sweden_group/providers/Microsoft.Logic/workflows/jasmin-order-processor-sweden/runs/[RUN_ID]?api-version=2019-05-01"
+   ```
 
 ### **Azure Portal:**
 Direct link available after deployment

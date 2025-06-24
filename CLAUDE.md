@@ -25,10 +25,11 @@ This file provides essential guidance for Claude Code when working with the Jasm
 - App password: Stored in `.env` as `WEBDE_APP_PASSWORD`
 - Only process emails sent TO this alias (not FROM)
 
-### 4. **AI Service Choice**
-- Using **Azure Cognitive Services** (NOT AI Foundry)
-- Reason: Direct endpoint availability and OpenAI API compatibility
+### 4. **AI Service: Azure AI Foundry**
+- Using **Azure AI Foundry** project: `jasmin-catering`
+- Resource: `jasmin-catering-resource` (AI Services)
 - Endpoint: `https://jasmin-catering-resource.cognitiveservices.azure.com/`
+- Note: AI Foundry uses AI Services infrastructure, hence the cognitiveservices URL
 
 ## 📁 Project Structure
 
@@ -89,10 +90,11 @@ https://jasmin-catering-resource.cognitiveservices.azure.com/openai/deployments/
 
 ## 🏗️ Architecture Decisions
 
-1. **Azure Cognitive Services** over AI Foundry
-   - Available endpoints
-   - Stable API
-   - Direct GPT-4 access
+1. **Azure AI Foundry** for AI capabilities
+   - Unified AI platform
+   - Project-based organization
+   - Uses AI Services infrastructure
+   - Direct GPT-4 access via OpenAI API
 
 2. **Logic Apps Consumption tier**
    - Simple email processing
