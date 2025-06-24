@@ -1,0 +1,30 @@
+====================================
+TEST EMAIL FOR JASMIN CATERING
+====================================
+
+To: ma3u-test@email.de
+Subject: Catering Anfrage für Firmenevent Berlin
+
+Sehr geehrte Damen und Herren,
+
+wir planen ein Firmenevent und benötigen Catering für unsere Veranstaltung.
+
+Details:
+- Datum: 15. August 2025
+- Anzahl Personen: 50
+- Ort: Berlin-Mitte, Konferenzraum
+- Zeit: 12:00 - 16:00 Uhr
+- Budget: ca. 2.000 EUR
+
+Wir hätten gerne ein Buffet mit syrischen Spezialitäten. Einige unserer Mitarbeiter sind Vegetarier.
+
+Können Sie uns ein Angebot zusenden?
+
+Mit freundlichen Grüßen,
+Test User
+Firma GmbH
+Tel: 030-12345678
+
+====================================
+SEND THIS EMAIL TO: ma3u-test@email.de
+====================================

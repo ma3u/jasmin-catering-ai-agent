@@ -1,277 +1,364 @@
 # 🍽️ Jasmin Catering AI Agent
 
-## 🚀 **Current Status: Web.de Logic Apps Integration Ready**
+## 🚀 **Current Implementation: Azure Logic Apps + AI Foundry**
 
-Automated catering inquiry processing system for Jasmin Catering - a Syrian fusion restaurant in Berlin specializing in events with 15-500 guests.
+Automated email processing system for Jasmin Catering - a Syrian fusion restaurant in Berlin. The system monitors emails sent to `ma3u-test@email.de`, generates professional catering offers in German using GPT-4 through Azure AI Foundry, and creates email drafts for review.
 
 ### ✅ **What's Working Now:**
-- **Web.de Email Monitoring**: Automatic IMAP monitoring for `matthias.buchhorn@web.de` (test) / `info@jasmincatering.com` (production)
-- **Logic Apps Workflow**: Complete email processing with German catering inquiry detection
-- **Slack Approval System**: Real-time notifications to `#email-approvals` in `mabured.slack.com`
-- **German Response Templates**: Professional templates for Hochzeit, Firmenevent, Geburtstag, and general inquiries
-- **SMTP Email Sending**: Automated German responses via web.de SMTP
-- **Syrian Fusion Context**: Authentic menu descriptions and pricing in German
+- **Email Filtering**: Only processes emails sent TO `ma3u-test@email.de`
+- **AI Processing**: Azure AI Foundry (GPT-4) for intelligent response generation
+- **Automated Offers**: Calculates pricing based on guest count (35-45€/person)
+- **German Templates**: Professional responses with Syrian fusion menu suggestions
+- **Sweden Central Region**: Default deployment target due to Azure restrictions
 
 ---
 
 ## 📁 **Project Structure**
 
 ```
-/Users/ma3u/projects/jasmin-catering-ai-agent/
-├── README.md                          # This documentation
-├── azure.yaml                         # Azure Developer CLI configuration
-├── .gitignore                         # Git ignore rules
-├── LAST_UPDATED                       # Last backup timestamp
-├── config/
-│   └── azure-resources.json           # Azure resource configuration
-├── logicapp/
-│   ├── webde-approval-workflow.json   # Slack approval & SMTP sending workflow
-│   └── workflow-parameters.json       # Generated during deployment
-├── scripts/
-│   ├── deploy-webde-logicapps.sh      # Main web.de deployment script ⚙️
-│   ├── test-webde-emails.sh           # Email test templates 🧪
-│   └── backup-to-github.sh            # GitHub backup automation 💾
-├── docs/
-│   ├── webde-testing-guide.md         # Comprehensive testing instructions
-│   └── deployment-guide.md            # Detailed setup instructions
-└── azure-functions/                   # Legacy Azure Functions (archived)
-    └── [Previous implementation files]
+jasmin-catering-ai-agent/
+├── README.md                       # This documentation
+├── CLAUDE.md                       # Guide for future Claude instances
+├── .env                           # Environment configuration (not in Git)
+├── .gitignore                     # Git ignore rules
+├── deployments/                   # All deployment assets
+│   ├── scripts/                   # Deployment and utility scripts
+│   │   ├── deploy-main.sh        # Main deployment script
+│   │   ├── load-env-config.sh    # Environment configuration loader
+│   │   └── monitor-logic-app.sh  # Monitoring script
+│   ├── logic-apps/               # Logic App workflow definitions
+│   │   └── email-processor-workflow.json
+│   └── templates/                # Email templates and examples
+│       └── email-draft-example.md
+└── docs/                         # Additional documentation
 ```
 
 ---
 
-## 🚀 **Quick Start Guide**
-
-### **1. Deploy the Web.de Logic Apps** 
-```bash
-cd /Users/ma3u/projects/jasmin-catering-ai-agent
-./scripts/deploy-webde-logicapps.sh
-```
-
-### **2. Configure Email Connections**
-After deployment, update in Azure Portal:
-- **IMAP Connection**: Enter web.de password for matthias.buchhorn@web.de
-- **SMTP Connection**: Enter web.de password for matthias.buchhorn@web.de
-- **Slack Bot Token**: Update Logic App parameter with your bot token
-
-### **3. Create Slack Approval Channel**
-In mabured.slack.com workspace:
-```bash
-/create #email-approvals
-/invite @YasminCatering
-```
-
-### **4. Test with Email Templates**
-```bash
-./scripts/test-webde-emails.sh
-# Copy and send test emails to matthias.buchhorn@web.de
-```
-
-### **5. Monitor & Approve**
-Check #email-approvals channel for notifications and click approval buttons.
-
----
-
-## 📧 **Email Processing Workflow**
+## 🏗️ **Architecture**
 
 ```mermaid
 graph TD
-    A[📧 Email arrives at matthias.buchhorn@web.de] --> B[🔄 Logic App IMAP Check]
-    B --> C[📋 Parse Email Content & Keywords]
-    C --> D{🍽️ Catering Inquiry?}
-    D -->|Yes| E[🇩🇪 Detect Event Type]
-    D -->|No| F[❌ Ignore Email]
-    E --> G[💬 Send to Slack #email-approvals]
-    G --> H{👤 Human Decision}
-    H -->|✅ Approve| I[📤 Send German Response via SMTP]
-    H -->|❌ Reject| J[📝 Log Rejection]
-    I --> K[✅ Update Status to 'Sent']
-    J --> L[✅ Update Status to 'Rejected']
-```
-
-### **Slack Approval Message Format:**
-```
-🍽️ Neue Catering-Anfrage von Web.de
-
-Von: customer@example.com
-Betreff: Hochzeit Catering für 120 Gäste
-
-Event-Typ: Hochzeit
-Email-ID: msg-12345...
-
-Original-Anfrage:
-```
-Hallo, wir heiraten am 15. August 2025...
-```
-
-[✅ Antworten] [❌ Ignorieren]
+    A[📧 Email Inbox] --> B{🔍 Filter}
+    B -->|TO: ma3u-test@email.de| C[✅ Process Email]
+    B -->|Other Recipients| D[❌ Ignore]
+    C --> E[🤖 Azure AI Foundry]
+    E --> F[📝 Generate Offer]
+    F --> G[💾 Store Draft]
+    G --> H[📤 Ready for Review]
+    
+    subgraph "Azure AI Platform"
+        E
+        N[AI Project:<br/>jasmin-catering]
+        O[AI Services Resource]
+        J[GPT-4 Model]
+    end
+    
+    subgraph "Logic App"
+        I[Sweden Central<br/>Region]
+        B
+        C
+    end
+    
+    subgraph "Processing Steps"
+        K[Extract Details]
+        L[Calculate Pricing]
+        M[Generate German Response]
+    end
 ```
 
 ---
 
-## 🇩🇪 **German Response Templates**
+## 🚀 **Quick Start**
 
-### **Template Types:**
-1. **🌟 Hochzeit (Wedding)** - Royal Wedding Package, Garden Celebration, Veggie Fusion
-2. **💼 Firmenevent (Corporate)** - Business Premium, Business Lunch, Healthy & Veggie  
-3. **🎂 Geburtstag (Birthday)** - Party Deluxe, Family Celebration, Kids & Adults
-4. **🍽️ Allgemeine Veranstaltung (General)** - Classic Package, Vegetarian Delight, Premium Experience
+### **Prerequisites**
+- Azure CLI installed (`brew install azure-cli`)
+- Azure subscription with access
+- `.env` file with required credentials
 
-### **Sample Wedding Response (German):**
-```german
-Liebe Brautleute,
+### **1. Clone & Configure**
+```bash
+git clone [repository-url]
+cd jasmin-catering-ai-agent
 
-vielen Dank für Ihre Anfrage für Ihr Hochzeit-Catering.
-
-Als spezialisiertes syrisches Fusion-Catering freuen wir uns, 
-Ihnen unsere exklusiven Hochzeitspakete anzubieten:
-
-🌟 ROYAL WEDDING PACKAGE (52€/Person)
-• Humus with Love - 3 authentische Variationen
-• Malakieh "Die Königin" - exklusive Dessert-Station
-• Warme syrische Hauptgerichte mit Fleisch & vegetarisch
-• Vollservice: Aufbau, Service-Personal & Abbau
-
-✨ ALLE PAKETE BEINHALTEN:
-✅ Kostenlose Lieferung in Berlin & Umgebung
-✅ Professioneller Aufbau am Veranstaltungsort
-✅ 4 Stunden Service-Personal
-✅ Hochwertiges Geschirr, Besteck & Dekoration
-
-Mit herzlichen Grüßen und den besten Wünschen für Ihre Hochzeit,
-Das Jasmin Catering Team
-
-📞 +49 173 963 1536
-🌐 www.jasmincatering.com
-📧 info@jasmincatering.com
-
-P.S: Als Familienunternehmen mit syrischen Wurzeln bringen wir 
-authentische orientalische Aromen mit Berliner Kreativität auf 
-Ihren besonderen Tag! 🇸🇾❤️🇩🇪
+# Create .env file with your credentials
+cp .env.example .env
+# Edit .env with your values
 ```
 
+### **2. Deploy**
+```bash
+cd deployments/scripts
+./deploy-main.sh
+```
+
+### **3. Monitor**
+```bash
+./monitor-logic-app.sh
+```
 
 ---
 
-## 🏗️ **Architecture: Azure AI Foundry Implementation**
+## 🔧 **Deployment Scripts**
 
-### **Implementation Plan: Azure AI Foundry + RAG**
+| Script | Purpose | Usage |
+|--------|---------|-------|
+| `deploy-ai-foundry.sh` | Deploy with AI Foundry integration | `./deploy-ai-foundry.sh` |
+| `deploy-main.sh` | Basic deployment script | `./deploy-main.sh` |
+| `load-env-config.sh` | Loads environment configuration | Sourced by other scripts |
+| `monitor-logic-app.sh` | Monitors Logic App runs | `./monitor-logic-app.sh` |
 
-**Platform:** Microsoft Azure, utilizing Azure AI Foundry services for intelligent automation.
+### **deploy-ai-foundry.sh**
+- Deploys with Azure AI Foundry project configuration
+- Tests AI endpoint connectivity
+- Shows AI project links
+- Includes detailed AI configuration info
 
-**Concept:** Building an AI-powered solution based on Azure Cloud, focusing on the Azure AI Agent Service combined with RAG (Retrieval-Augmented Generation) to retrieve and utilize knowledge from our Syrian fusion catering knowledge base.
+### **deploy-main.sh**
+- Creates resource group in Sweden Central
+- Deploys Logic App with email filtering
+- Basic AI integration setup
+- Sets up recurrence trigger (5 minutes)
 
-### **Phase 1: Current - Email Processing Pipeline** ✅
-- **Azure LogicApps**: Email monitoring and Slack notifications
-- **1und1 and web.de**: Email ingestion (`matthias.buchhorn@web.de`)
-- **GitHub**: Version control and automated backups
+### **load-env-config.sh**
+- Loads configuration from `.env`
+- Sets Sweden Central as default region
+- Validates required environment variables
+- Exports configuration for other scripts
 
-### **Phase 2: AI Agent Integration** 🔄
-- **Azure AI Foundry Agent Service**: Main orchestration and intelligence
-- **Azure AI Search**: RAG-enabled knowledge base indexing
-- **GPT-4o Integration**: Natural language processing for German communication
-- **Azure Functions**: Supporting logic for offer calculations
+### **monitor-logic-app.sh**
+- Shows latest Logic App runs
+- Displays processing status
+- Monitors email filtering results
 
-### **Phase 3: Knowledge Base & RAG** 🔄
-- **Azure Blob Storage**: Documents (T&Cs, references, menu descriptions)
-- **Azure SQL Database**: Structured data (menu items, prices, package definitions)
-- **Azure AI Search**: Indexing for RAG queries
-- **Knowledge Management**: Syrian fusion specialties, pricing logic, German templates
+---
 
-### **Phase 4: Production Automation** 🔄
-- **Azure Communication Services**: Professional email sending
-- **Azure Monitor**: Logging and performance tracking
-- **Azure Key Vault**: Secure credential management
-- **Production Email**: Migration to `info@jasmincatering.com`
+## 📝 **Workflow Files**
 
-# 🔧 **Developer Section: AI Foundry Order Processing**
+### **email-processor-workflow.json**
+Main Logic App workflow that:
+1. Simulates email inbox with test emails
+2. Filters emails by recipient (`ma3u-test@email.de`)
+3. Sends filtered emails to AI for processing
+4. Generates professional German responses
+5. Stores email drafts with pricing
 
-## **Latest Implementation (June 2025)**
+**Key Features:**
+- Email filtering by TO field
+- Batch processing support
+- Error handling
+- Status tracking
 
-### **Current Status** ✅
-- **Deployed**: June 23, 2025
-- **Logic App**: `jasmin-order-processor` (North Europe)  
-- **Email**: `ma3u-test@email.de`
-- **AI**: Azure AI Foundry (GPT-4)
-- **Automation**: Full CLI deployment (no manual steps)
+---
 
-### **Quick Deployment** 🚀
+## 🤖 **AI Service: Azure AI Foundry**
 
-```bash
-# Navigate to project
-cd jasmin-catering-ai-agent/ai-foundry-email-processor
+We use **Azure AI Foundry** for AI capabilities:
 
-# Run automated deployment (no manual steps!)
-./scripts/deploy-complete.sh
+1. **Unified Platform**: AI Foundry provides a comprehensive AI development platform
+2. **Project Management**: Organized AI resources under the `jasmin-catering` project
+3. **Model Access**: Direct access to GPT-4 and other models
+4. **Integration**: Seamless integration with other Azure AI services
+
+**Technical Details:**
+- **AI Project**: jasmin-catering
+- **Resource**: jasmin-catering-resource (AI Services)
+- **Endpoint**: The AI Foundry project uses the underlying AI Services endpoint
+- **API Format**: OpenAI-compatible REST API
+
+**Endpoint Format:**
+```
+https://jasmin-catering-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions
 ```
 
-**That's it!** The script will:
-- Load credentials from `.env`
-- Deploy Logic App to North Europe
-- Configure AI integration
-- Set up email monitoring
+*Note: AI Foundry projects utilize AI Services infrastructure, which is why the endpoint appears as a Cognitive Services URL. This is the standard Azure AI architecture.*
 
-### **Testing & Monitoring** 🧪
+---
 
+## 📧 **Email Processing Flow**
+
+### **1. Email Reception & Filtering**
+- Logic App checks for new emails every 5 minutes
+- Filters emails by recipient: only processes emails sent TO `ma3u-test@email.de`
+- Ignores all other emails (spam, newsletters, etc.)
+
+### **2. AI-Powered Email Analysis**
+The system sends filtered emails to Azure AI Foundry for analysis:
+
+**AI extracts:**
+- Event type (Firmenevent, Hochzeit, Geburtstag, etc.)
+- Date and time of event
+- Number of guests
+- Location/venue
+- Budget constraints
+- Special requirements (vegetarian, allergies, etc.)
+- Preferred cuisine style
+
+### **3. Intelligent Response Generation**
+Based on the analysis, AI generates a complete German response:
+
+**Response includes:**
+- Personal greeting using sender's name
+- Reference to their specific inquiry
+- Customized Syrian fusion menu suggestions
+- Detailed pricing calculation:
+  - Base price per person (35-45€)
+  - Service fee (15%)
+  - Total cost with tax
+  - Required deposit (30%)
+- Special accommodations for dietary requirements
+- Clear next steps for booking
+
+### **4. Draft Storage & Management**
+Each generated response is stored as a draft:
+
+```json
+{
+  "draftId": "draft-20250624-123456",
+  "originalEmail": {
+    "from": "kunde@example.com",
+    "subject": "Catering Anfrage",
+    "body": "Original inquiry text..."
+  },
+  "analysis": {
+    "eventType": "Firmenevent",
+    "guestCount": 50,
+    "eventDate": "15. August 2025",
+    "specialRequirements": ["vegetarisch"]
+  },
+  "draftResponse": {
+    "to": "kunde@example.com",
+    "subject": "Re: Catering Anfrage - Ihr Angebot von Jasmin Catering",
+    "body": "Complete German response with offer..."
+  },
+  "status": "pending_review",
+  "createdAt": "2025-06-24T12:34:56Z"
+}
+```
+
+### **Example Input Email:**
+```
+From: kunde@example.com
+To: ma3u-test@email.de
+Subject: Catering Anfrage für Firmenevent
+
+Guten Tag,
+wir planen ein Event für 50 Personen am 15. August 2025 in Berlin.
+Bitte um ein Angebot für syrisches Catering.
+```
+
+### **Generated Response:**
+- Personal greeting in German
+- Syrian fusion menu suggestions
+- Pricing: 50 guests × 40€ = 2,000€
+- Service fee: 15%
+- Total: 2,300€
+
+---
+
+## 🌍 **Region: Sweden Central**
+
+**Default Region**: `swedencentral`
+
+Due to Azure restrictions in West Europe, all deployments default to Sweden Central. This is configured in:
+- `load-env-config.sh`: Sets default region
+- `deploy-main.sh`: Forces Sweden Central
+- Resource group: `logicapp-jasmin-sweden_group`
+
+---
+
+## 📊 **Monitoring & Testing**
+
+### **Check Deployment Status:**
 ```bash
-# Check deployment status
 az logic workflow show \
-  --resource-group logicapp-jasmin-catering_group \
-  --name jasmin-order-processor \
+  --resource-group logicapp-jasmin-sweden_group \
+  --name jasmin-order-processor-sweden \
   --query state
-
-# Monitor runs
-az logic workflow run list \
-  --resource-group logicapp-jasmin-catering_group \
-  --name jasmin-order-processor \
-  --output table
-
-# Test email
-# Send to: ma3u-test@email.de
-# Subject: "Catering Anfrage"
 ```
 
-### **Key Features** 🌟
-
-- **Automated Deployment**: Single script deployment with `deploy-complete.sh`
-- **Region**: North Europe (West Europe restricted)
-- **Email Alias**: `ma3u-test@email.de` for testing
-- **AI Integration**: Azure AI Foundry with GPT-4
-- **Security**: All secrets in `.env` file (never in code)
-- **Monitoring**: Built-in Azure logging
-
-### **Architecture** 🏗️
-
-```
-┌─────────────────┐     ┌──────────────────┐     ┌─────────────────┐
-│ ma3u-test@      │────▶│  Logic Apps      │────▶│  AI Foundry     │
-│ email.de        │     │  (North Europe)  │     │  (GPT-4)        │
-└─────────────────┘     └──────────────────┘     └─────────────────┘
-        ↑                      │                           │
-        │                      ▼                           ▼
-   Test Email           ┌──────────────────┐     ┌─────────────────┐
-                        │  Workflow Logs   │     │  AI Processing  │
-                        └──────────────────┘     └─────────────────┘
+### **View Recent Runs:**
+```bash
+./monitor-logic-app.sh
 ```
 
-### **Important Notes** ⚠️
+### **Azure Portal:**
+Direct link available after deployment
 
-- **Region**: Always use `northeurope` - West Europe has restrictions
-- **Secrets**: Never commit `.env` file to Git
-- **Email**: Only processes emails sent TO `ma3u-test@email.de`
-- **API Key**: Stored in `.env` as `AZURE_AI_API_KEY`
+---
 
-### **Next Steps** 📈
+## 🔐 **Configuration (.env)**
 
-1. **Add Email Trigger**: Implement real IMAP monitoring
-2. **Teams Integration**: Add approval workflow
-3. **SMTP Response**: Send automated responses
-4. **Production**: Move to `info@jasmincatering.com`
+Required environment variables:
+```bash
+# Azure
+AZURE_SUBSCRIPTION_ID=your-subscription-id
+AZURE_RESOURCE_GROUP=logicapp-jasmin-catering_group
+AZURE_AI_API_KEY=your-api-key
 
-### **Documentation** 📚
+# Email
+WEBDE_EMAIL_ALIAS=ma3u-test@email.de
+WEBDE_APP_PASSWORD=your-app-password
+```
 
-- [AI Foundry README](ai-foundry-email-processor/README.md)
-- [Automated Deployment Guide](ai-foundry-email-processor/AUTOMATED_DEPLOYMENT.md)
-- [Security Best Practices](ai-foundry-email-processor/SECURITY.md)
+---
 
-## **Current Implementation Overview**
+## 📚 **Templates**
+
+### **email-draft-example.md**
+Shows example of generated email drafts including:
+- Professional German greeting
+- Syrian menu details
+- Pricing breakdown
+- Next steps
+
+---
+
+## 🚨 **Important Notes**
+
+1. **Email Filter**: Only processes emails sent TO `ma3u-test@email.de`
+2. **Region**: Always uses Sweden Central (West Europe restricted)
+3. **API Key**: Stored in `.env`, never in code
+4. **Pricing**: Calculated at 35-45€ per person
+5. **Language**: All customer communication in German
+
+---
+
+## 🛠️ **Troubleshooting**
+
+### **Deployment Fails**
+- Check Azure login: `az login`
+- Verify subscription: `az account show`
+- Ensure `.env` file exists with all variables
+
+### **No Emails Processed**
+- Verify email is sent TO `ma3u-test@email.de`
+- Check Logic App is enabled
+- Review filter conditions in workflow
+
+### **AI Errors**
+- Verify API key in `.env`
+- Check endpoint URL format
+- Ensure Cognitive Services resource exists
+
+---
+
+## 📈 **Next Steps**
+
+1. **Production Email**: Migrate from test to `info@jasmincatering.com`
+2. **IMAP Integration**: Replace simulation with real email monitoring
+3. **Approval Workflow**: Add Teams/Slack approval before sending
+4. **SMTP Sending**: Automated email responses
+
+---
+
+## 👥 **Contributing**
+
+1. Check `CLAUDE.md` for AI assistant guidance
+2. Follow existing code patterns
+3. Test deployments in Sweden Central
+4. Update documentation for changes
+
+---
+
+Built for Jasmin Catering - Syrian Fusion Cuisine in Berlin 🇸🇾🇩🇪

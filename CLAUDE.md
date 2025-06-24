@@ -1,75 +1,176 @@
-# CLAUDE.md
+# CLAUDE.md - Guide for Future Claude Instances
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+This file provides essential guidance for Claude Code when working with the Jasmin Catering AI Agent codebase.
 
-## Project Overview
+## 🎯 Project Overview
 
-This is an Azure-based automated catering inquiry processing system for Jasmin Catering, a Syrian fusion restaurant in Berlin. The system monitors emails, detects catering inquiries, and facilitates team approval through Slack integration, with plans for AI-powered automated responses.
+**What**: Automated catering inquiry processing system for Jasmin Catering (Syrian fusion restaurant in Berlin)
+**Current Status**: Deployed to Sweden Central, monitoring emails at `ma3u-test@email.de`
+**Technology**: Azure Logic Apps + Cognitive Services (GPT-4) + CLI deployment
 
-## Essential Commands
+## 🚨 Critical Information
 
-### Deployment
-```bash
-# Deploy using Azure Developer CLI
-azd up
+### 1. **Region: Sweden Central**
+- **ALWAYS use `swedencentral`** - West Europe is NOT accepting new customers
+- Default region set in `load-env-config.sh`
+- Resource group: `logicapp-jasmin-sweden_group`
 
-# Manual Azure login if needed
-az login
-az account set --subscription b58b1820-35f0-4271-99be-7c84d4dd40f3
+### 2. **Deployment Philosophy**
+- **NO manual Azure Portal configuration** - Everything must be scriptable
+- Use `az` CLI commands only (avoid `azd` due to interactive prompts)
+- All secrets in `.env` file - NEVER hardcode
+
+### 3. **Email Configuration**
+- Filter emails by TO field: `ma3u-test@email.de`
+- App password: Stored in `.env` as `WEBDE_APP_PASSWORD`
+- Only process emails sent TO this alias (not FROM)
+
+### 4. **AI Service Choice**
+- Using **Azure Cognitive Services** (NOT AI Foundry)
+- Reason: Direct endpoint availability and OpenAI API compatibility
+- Endpoint: `https://jasmin-catering-resource.cognitiveservices.azure.com/`
+
+## 📁 Project Structure
+
+```
+jasmin-catering-ai-agent/
+├── .env                           # ALL secrets here (never commit!)
+├── CLAUDE.md                      # This file
+├── README.md                      # Main documentation
+├── deployments/                   # All deployment assets
+│   ├── scripts/                   # Deployment scripts
+│   │   ├── deploy-main.sh        # Main deployment
+│   │   ├── load-env-config.sh    # Environment loader
+│   │   └── monitor-logic-app.sh  # Monitoring
+│   ├── logic-apps/               # Workflow definitions
+│   │   └── email-processor-workflow.json
+│   └── templates/                # Email templates
+│       └── email-draft-example.md
 ```
 
-### Testing
+## 🔧 Common Tasks
+
+### Deploy the System
 ```bash
-# Test the workflow by sending an email to:
-# matthias.buchhorn@web.de
-
-
-# Check Logic App status
-az logicapp show --resource-group logicapp-jasmin-catering_group --name mabu-logicapps
-
-# View recent runs
-az logicapp run list --resource-group logicapp-jasmin-catering_group --name mabu-logicapps
+cd deployments/scripts
+./deploy-main.sh
 ```
 
-## Architecture
+### Monitor Logic App
+```bash
+./monitor-logic-app.sh
+```
 
-### Current Implementation (Phase 1)
-1. **Email Monitoring**: Logic App monitors web.de inbox via IMAP
-2. **Inquiry Detection**: Filters German catering inquiries using keywords
-3. **Slack Notification**: Sends formatted messages to #email-approvals channel
-4. **Human Approval**: Team approves/rejects via Slack interactive buttons
-5. **Automated Response**: Sends pre-defined German responses via SMTP
+### Check Specific Run
+```bash
+az rest --method get \
+  --uri "https://management.azure.com/subscriptions/$AZURE_SUBSCRIPTION_ID/resourceGroups/logicapp-jasmin-sweden_group/providers/Microsoft.Logic/workflows/jasmin-order-processor-sweden/runs/[RUN_ID]?api-version=2019-05-01"
+```
 
-### Key Components
-- **Azure Logic Apps (Consumption)**: Workflow orchestration (JSON-based definitions)
-- **Azure AI Foundry**: Future AI agent integration (Phases 2-4)
-- **Slack Integration**: Team notifications and approval workflow
-- **Email Services**: web.de for monitoring, SMTP for responses
+## ⚠️ Known Issues & Solutions
 
-### Environment Configuration
-All configuration is in `.env` file:
-- Azure subscription and resource details
-- Email credentials for web.de
-- Slack bot token and channel settings
-- AI Foundry project configuration
+### 1. Region Restrictions
+**Problem**: "The selected region is currently not accepting new customers"
+**Solution**: Always use `swedencentral`, never `westeurope`
 
-### Business Context
-- **Service**: Syrian fusion catering in Berlin
-- **Languages**: German (primary), English
-- **Event sizes**: 15-500 guests
-- **Key offerings**: Humus with Love, Malakieh desserts, vegan options
-- **Response templates**: Located in environment variables (APPROVAL_EMAIL_*, REJECTION_EMAIL_*)
+### 2. AI Endpoint Authentication
+**Problem**: 401 Unauthorized errors
+**Solution**: Use Cognitive Services endpoint format:
+```
+https://jasmin-catering-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01
+```
 
-## Development Notes
+### 3. Email Filtering
+**Problem**: Processing wrong emails
+**Solution**: Filter by TO field in Logic App Query action:
+```json
+"where": "@equals(item()['to'], 'ma3u-test@email.de')"
+```
 
-1. **No local build required** - Logic Apps are JSON-based and deployed directly to Azure
-2. **Testing requires real email** - Send test emails to configured addresses
-3. **OAuth connections** must be authorized manually in Azure Portal after deployment
-4. **Slack bot** must be configured in workspace before deployment
+## 🏗️ Architecture Decisions
 
-## Important Considerations
+1. **Azure Cognitive Services** over AI Foundry
+   - Available endpoints
+   - Stable API
+   - Direct GPT-4 access
 
-- The project recently underwent major refactoring (many files deleted)
-- Focus is on cloud-based services rather than local development
-- AI integration is planned but not yet implemented
-- All workflow logic resides in Azure Logic Apps, not in code files
+2. **Logic Apps Consumption tier**
+   - Simple email processing
+   - Cost-effective
+   - Easy deployment
+
+3. **Sweden Central region**
+   - West Europe restrictions
+   - Good latency
+   - Full service availability
+
+4. **Email filtering by recipient**
+   - Process only targeted emails
+   - Avoid spam processing
+   - Clear test scenarios
+
+## 📊 Current Workflow
+
+```
+Timer (5 min) → Simulate Emails → Filter (TO: ma3u-test@email.de) → AI Processing → Generate Offer → Store Draft
+```
+
+## 💡 Key Commands
+
+```bash
+# Load environment
+source deployments/scripts/load-env-config.sh
+
+# Test AI endpoint
+curl -X POST "https://jasmin-catering-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions?api-version=2024-02-01" \
+  -H "api-key: $AZURE_AI_API_KEY" \
+  -H "Content-Type: application/json" \
+  -d '{"messages":[{"role":"user","content":"Test"}],"max_tokens":50}'
+
+# View Logic App state
+az logic workflow show \
+  --resource-group logicapp-jasmin-sweden_group \
+  --name jasmin-order-processor-sweden \
+  --query state
+```
+
+## 📝 Important Context
+
+1. **Client**: Jasmin Catering - Syrian fusion restaurant in Berlin
+2. **Language**: All customer communication in German
+3. **Pricing**: 35-45€ per person for catering
+4. **Business**: Event catering 15-500 guests
+
+## 🚀 Quick Fixes
+
+### If deployment fails:
+1. Check region is `swedencentral`
+2. Verify `.env` file exists
+3. Ensure Azure CLI logged in: `az login`
+
+### If AI processing fails:
+1. Verify Cognitive Services endpoint (not AI Foundry)
+2. Check API key in `.env`
+3. Test endpoint with curl
+
+### If emails not filtered:
+1. Check TO field filter in workflow
+2. Verify test email sent TO `ma3u-test@email.de`
+3. Review Query action in Logic App
+
+## 🎯 Next Steps for New Claude Instance
+
+1. **Read**: Start with this file, then README.md
+2. **Check**: Verify `.env` file exists with all variables
+3. **Deploy**: Run `./deploy-main.sh` if needed
+4. **Test**: Send test email to `ma3u-test@email.de`
+5. **Monitor**: Use `./monitor-logic-app.sh`
+
+## 📚 Key Files
+
+- `deployments/scripts/deploy-main.sh` - Main deployment
+- `deployments/logic-apps/email-processor-workflow.json` - Workflow definition
+- `deployments/scripts/load-env-config.sh` - Environment configuration
+- `.env` - All secrets (never commit!)
+
+Remember: The goal is full automation with zero manual Azure Portal steps!
