@@ -1,7 +1,7 @@
 #!/bin/bash
 
-echo "🔍 Monitoring Logic App: jasmin-order-processor"
-echo "📍 Location: North Europe"
+echo "🔍 Monitoring Logic App: jasmin-order-processor-sweden"
+echo "📍 Location: Sweden Central"
 echo "📧 Monitoring email: ma3u-test@email.de"
 echo ""
 echo "Press Ctrl+C to stop monitoring"
@@ -13,16 +13,16 @@ while true; do
     
     # Get latest runs
     az logic workflow run list \
-        --resource-group logicapp-jasmin-catering_group \
-        --name jasmin-order-processor \
+        --resource-group logicapp-jasmin-sweden_group \
+        --name jasmin-order-processor-sweden \
         --top 3 \
         --query "[].{RunID:name, Status:status, StartTime:startTime, Trigger:trigger.name}" \
         --output table
     
     # Get latest run details if exists
     LATEST_RUN=$(az logic workflow run list \
-        --resource-group logicapp-jasmin-catering_group \
-        --name jasmin-order-processor \
+        --resource-group logicapp-jasmin-sweden_group \
+        --name jasmin-order-processor-sweden \
         --top 1 \
         --query "[0].name" -o tsv)
     

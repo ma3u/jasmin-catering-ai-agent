@@ -27,9 +27,15 @@ jasmin-catering-ai-agent/
 │   │   ├── deploy-ai-foundry.sh  # AI Foundry deployment script
 │   │   ├── load-env-config.sh    # Environment configuration loader
 │   │   ├── monitor-logic-app.sh  # Monitoring script
-│   │   └── send-test-email.sh    # Test email information script
+│   │   ├── send-test-email.sh    # Test email information script
+│   │   └── send-test-email.py    # Python test email sender
 │   ├── logic-apps/               # Logic App workflow definitions
-│   │   └── email-processor-workflow.json
+│   │   ├── email-processor-workflow.json  # Main workflow definition
+│   │   └── ai-foundry-workflow.json       # AI Foundry specific workflow
+│   ├── archive/                  # Experimental/deprecated scripts
+│   │   ├── scripts/              # Archived Python and shell scripts
+│   │   ├── logic-apps/           # Archived workflow definitions
+│   │   └── README.md             # Archive documentation
 │   ├── terraform/                # Infrastructure as Code (Terraform)
 │   │   ├── main.tf              # Main Terraform configuration
 │   │   ├── variables.tf         # Variable definitions
@@ -111,7 +117,9 @@ cd deployments/scripts
 
 ## 🔧 **Deployment Options**
 
-### **Option 1: Shell Scripts (Quick Start)**
+### **Option 1: Shell Scripts (Recommended)**
+
+The deployment scripts have been cleaned and organized. Only production-ready scripts remain in the main directories.
 
 | Script | Purpose | Usage |
 |--------|---------|-------|
@@ -120,6 +128,9 @@ cd deployments/scripts
 | `load-env-config.sh` | Loads environment configuration | Sourced by other scripts |
 | `monitor-logic-app.sh` | Monitors Logic App runs | `./monitor-logic-app.sh` |
 | `send-test-email.sh` | Shows test email configuration | `./send-test-email.sh` |
+| `send-test-email.py` | Python script to send test emails | `python send-test-email.py` |
+
+**Note**: Experimental scripts (Assistant API, RAG, vector DB) have been moved to `deployments/archive/`
 
 ### **Option 2: Terraform (Infrastructure as Code)**
 
@@ -194,56 +205,27 @@ Main Logic App workflow that:
 
 ---
 
-## 🤖 **AI Service: Azure AI Foundry with OpenAI Assistant**
+## 🤖 **AI Service: Azure AI Foundry**
 
-We use **Azure AI Foundry** with OpenAI Assistant API for intelligent email processing:
+We use **Azure AI Foundry** for AI capabilities:
 
-### **Assistant Integration**
-- **Assistant ID**: `asst_MN5PHipyHYPXyq3fENx7V20j`
-- **Purpose**: Specialized catering inquiry processing
-- **Language**: German (Deutsch)
-- **Features**: Pre-configured knowledge, consistent formatting, conversation threads
+1. **Unified Platform**: AI Foundry provides a comprehensive AI development platform
+2. **Project Management**: Organized AI resources under the `jasmin-catering` project
+3. **Model Access**: Direct access to GPT-4 and other models
+4. **Integration**: Seamless integration with other Azure AI services
 
-### **How It Works**
-1. **Thread Creation**: Each email creates a new conversation thread
-2. **Message Processing**: Customer inquiry added to thread
-3. **Assistant Run**: Assistant processes the inquiry with RAG
-4. **Response Generation**: Professional German catering offer created
-5. **Draft Storage**: Response saved with thread and run IDs
-
-### **Assistant Configuration**
-The assistant is configured with a comprehensive prompt and RAG knowledge base:
-
-```bash
-# Configure assistant with prompt and documents
-python deployments/scripts/configure-assistant.py
-```
-
-This uploads:
-- Business process documentation
-- Complete menu catalog with prices
-- Email templates and examples
-- Company policies and terms
-
-See `deployments/ASSISTANT_CONFIGURATION.md` for details.
-
-### **Technical Details:**
+**Technical Details:**
 - **AI Project**: jasmin-catering
 - **Resource**: jasmin-catering-resource (AI Services)
-- **API Version**: 2024-02-01
-- **Endpoints Used**:
-  - `/openai/threads` - Create conversation threads
-  - `/openai/threads/{id}/messages` - Add messages
-  - `/openai/threads/{id}/runs` - Execute assistant
-  - `/openai/threads/{id}/messages` - Retrieve responses
+- **Endpoint**: The AI Foundry project uses the underlying AI Services endpoint
+- **API Format**: OpenAI-compatible REST API
 
-### **Benefits of Assistant API**:
-- **Context Preservation**: Maintains conversation history
-- **Consistent Responses**: Pre-configured assistant personality
-- **Thread Management**: Organized conversation tracking
-- **Future Extensibility**: Easy follow-up message handling
+**Endpoint Format:**
+```
+https://jasmin-catering-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions
+```
 
-For detailed Assistant API documentation, see: `deployments/ASSISTANT_API_INTEGRATION.md`
+*Note: AI Foundry projects utilize AI Services infrastructure, which is why the endpoint appears as a Cognitive Services URL. This is the standard Azure AI architecture.*
 
 ---
 
@@ -526,6 +508,16 @@ Shows example of generated email drafts including:
 3. **API Key**: Stored in `.env`, never in code
 4. **Pricing**: Calculated at 35-45€ per person
 5. **Language**: All customer communication in German
+
+## Helpful Resources
+
+- [Azure AI with Logic Apps](https://techcommunity.microsoft.com/blog/integrationsonazureblog/📢announcement-power-your-agents-in-azure-ai-foundry-agent-service-with-azure-lo/4414995)
+- [Azure AI Foundry Workshop ](https://github.com/Azure/ai-foundry-workshop/)
+- [Azure Logic App with AI Agent  Example](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-agents/samples/agents_tools/sample_agents_logic_apps.py)
+- [Azure AI Enterprise Example](https://github.com/Azure-Samples/azure-ai-agent-service-enterprise-demo/)
+- [AI Agent for Beginners](https://github.com/microsoft/ai-agents-for-beginners)
+- [Getting started with AI Agents](https://github.com/Azure-Samples/get-started-with-ai-agents)
+- [Azure AI SDK Samples Python](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-agents/samples/)
 
 ---
 
