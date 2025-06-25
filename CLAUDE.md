@@ -176,3 +176,14 @@ az logic workflow show \
 - `.env` - All secrets (never commit!)
 
 Remember: The goal is full automation with zero manual Azure Portal steps!
+
+## Use this Resources:
+
+- [Azure AI with Logic Apps](https://techcommunity.microsoft.com/blog/integrationsonazureblog/📢announcement-power-your-agents-in-azure-ai-foundry-agent-service-with-azure-lo/4414995)
+- [Azure AI Foundry Workshop ](https://github.com/Azure/ai-foundry-workshop/)
+- [Azure Logic App with AI Agent  Example](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-agents/samples/agents_tools/sample_agents_logic_apps.py)
+- [Azure AI Enterprise Example](https://github.com/Azure-Samples/azure-ai-agent-service-enterprise-demo/)
+- [AI Agent for Beginners](https://github.com/microsoft/ai-agents-for-beginners)
+- [Getting started with AI Agents](https://github.com/Azure-Samples/get-started-with-ai-agents)
+- [Azure AI SDK Samples Python](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-agents/samples/)
+

@@ -1,137 +1,130 @@
-# Jasmin Catering Order Response Templates
+# Jasmin Catering - Order Templates
 
-## Standard Order Confirmation (German)
+## Bestätigungs-Templates
 
+### Auftragsbestätigung Standard
 ```
-Sehr geehrte/r [Kundenname],
+Betreff: Auftragsbestätigung - Ihr Catering am [DATUM]
 
-vielen Dank für Ihre Anfrage bei Jasmin Catering!
+Sehr geehrte/r [KUNDE],
 
-Wir freuen uns, Ihnen folgendes Angebot für Ihre Veranstaltung unterbreiten zu können:
+hiermit bestätigen wir Ihren Catering-Auftrag:
 
 **Veranstaltungsdetails:**
-- Datum: [Datum]
-- Uhrzeit: [Zeit]
-- Anzahl der Gäste: [Anzahl]
-- Ort: [Veranstaltungsort]
+- Datum: [DATUM]
+- Uhrzeit: [UHRZEIT]
+- Gästeanzahl: [ANZAHL] Personen
+- Lieferadresse: [ADRESSE]
 
-**Ausgewähltes Menü:**
-[Menüdetails einfügen]
+**Gewähltes Package: [PACKAGE-NAME]**
+[DETAILS DES PACKAGES]
 
-**Gesamtpreis:** [Preis] EUR (inkl. MwSt.)
+**Gesamtpreis: € [BETRAG] inkl. MwSt.**
 
-**Inkludierte Leistungen:**
-- Lieferung und Abholung
-- Professionelles Service-Personal
-- Geschirr und Besteck
-- Aufbau und Abbau des Buffets
-
-Nächste Schritte:
-1. Bitte bestätigen Sie Ihre Bestellung bis zum [Datum]
-2. Eine Anzahlung von 30% ist bei Buchungsbestätigung fällig
-3. Restzahlung 7 Tage vor der Veranstaltung
-
-Für Rückfragen stehen wir Ihnen gerne zur Verfügung!
+**Nächste Schritte:**
+1. Bitte überweisen Sie die Anzahlung von 30% (€ [ANZAHLUNG]) bis zum [DATUM]
+2. Finale Gästezahl bitte bis 5 Werktage vor Event bestätigen
+3. Änderungen sind bis 4 Werktage vorher möglich
 
 Mit freundlichen Grüßen,
-Jasmin Catering Team
-```
-
-## Standard Order Confirmation (English)
-
-```
-Dear [Customer Name],
-
-Thank you for your inquiry with Jasmin Catering!
-
-We are pleased to provide you with the following offer for your event:
-
-**Event Details:**
-- Date: [Date]
-- Time: [Time]
-- Number of guests: [Number]
-- Location: [Venue]
-
-**Selected Menu:**
-[Menu details]
-
-**Total Price:** [Price] EUR (incl. VAT)
-
-**Included Services:**
-- Delivery and pickup
-- Professional service staff
-- Tableware and cutlery
-- Buffet setup and breakdown
-
-Next Steps:
-1. Please confirm your order by [Date]
-2. A 30% deposit is due upon booking confirmation
-3. Final payment 7 days before the event
-
-Please don't hesitate to contact us if you have any questions!
-
-Best regards,
-Jasmin Catering Team
-```
-
-## Inquiry Response Template (German)
-
-```
-Sehr geehrte/r [Interessent],
-
-vielen Dank für Ihr Interesse an Jasmin Catering!
-
-Gerne erstellen wir Ihnen ein individuelles Angebot für Ihre Veranstaltung. Um Ihnen das bestmögliche Angebot unterbreiten zu können, benötigen wir noch folgende Informationen:
-
-- Datum der Veranstaltung
-- Ungefähre Anzahl der Gäste
-- Veranstaltungsort
-- Gewünschte Verpflegungsart (Buffet, Menü, Flying Buffet)
-- Besondere Ernährungswünsche (vegan, vegetarisch, Allergien)
-- Ungefähres Budget
-
-**Unsere beliebtesten Pakete:**
-
-1. **Klassik Paket** (ab 35€ pro Person)
-   - Mezze-Auswahl
-   - 2 Hauptgerichte
-   - Dessert
-
-2. **Premium Paket** (ab 45€ pro Person)
-   - Erweiterte Mezze-Auswahl
-   - 3 Hauptgerichte
-   - 2 Desserts
-   - Getränke inklusive
-
-3. **Deluxe Paket** (ab 60€ pro Person)
-   - Komplettes syrisches Buffet
-   - Live-Cooking-Station
-   - Premium-Dessertauswahl
-   - Vollständiger Getränkeservice
-
-Wir freuen uns auf Ihre Rückmeldung!
-
-Mit herzlichen Grüßen,
 Ihr Jasmin Catering Team
 ```
 
-## Missing Information Template
-
+### Änderungsbestätigung
 ```
-Sehr geehrte/r [Kunde],
+Betreff: Änderungsbestätigung - Ihr Catering am [DATUM]
 
-vielen Dank für Ihre Catering-Anfrage!
+Sehr geehrte/r [KUNDE],
 
-Um Ihnen ein passgenaues Angebot erstellen zu können, benötigen wir noch folgende Informationen:
+wir haben Ihre Änderungswünsche erhalten und bestätigen folgende Anpassungen:
 
-[Liste der fehlenden Informationen]
+**Geänderte Details:**
+[LISTE DER ÄNDERUNGEN]
 
-Sobald wir diese Angaben von Ihnen erhalten haben, senden wir Ihnen umgehend ein detailliertes Angebot zu.
+**Neuer Gesamtpreis: € [BETRAG] inkl. MwSt.**
 
-Bei Fragen erreichen Sie uns unter:
-- Telefon: [Telefonnummer]
-- E-Mail: matthias.buchhorn@web.de
+Die restlichen Vereinbarungen bleiben unverändert bestehen.
 
 Mit freundlichen Grüßen,
-Jasmin Catering
+Ihr Jasmin Catering Team
+```
+
+## Nachfrage-Templates
+
+### Fehlende Informationen
+```
+Betreff: Rückfrage zu Ihrer Catering-Anfrage
+
+Sehr geehrte/r [KUNDE],
+
+vielen Dank für Ihre Catering-Anfrage. Um Ihnen ein maßgeschneidertes Angebot erstellen zu können, benötigen wir noch folgende Informationen:
+
+- [FEHLENDE INFO 1]
+- [FEHLENDE INFO 2]
+- [FEHLENDE INFO 3]
+
+Sobald wir diese Details haben, senden wir Ihnen umgehend drei passende Angebotsvarianten zu.
+
+Mit freundlichen Grüßen,
+Ihr Jasmin Catering Team
+```
+
+### Verfügbarkeitsanfrage
+```
+Betreff: Verfügbarkeit für Ihr Catering am [DATUM]
+
+Sehr geehrte/r [KUNDE],
+
+vielen Dank für Ihre Anfrage. Für den [DATUM] müssen wir die Verfügbarkeit prüfen, da dieser Termin sehr gefragt ist.
+
+Wir melden uns innerhalb von 24 Stunden bei Ihnen mit einer verbindlichen Rückmeldung.
+
+Alternativ könnten wir Ihnen folgende Termine anbieten:
+- [ALTERNATIV-DATUM 1]
+- [ALTERNATIV-DATUM 2]
+
+Mit freundlichen Grüßen,
+Ihr Jasmin Catering Team
+```
+
+## Absage-Templates
+
+### Terminabsage durch Kunden
+```
+Betreff: Bestätigung Ihrer Stornierung
+
+Sehr geehrte/r [KUNDE],
+
+wir bestätigen hiermit die Stornierung Ihres Catering-Auftrags für den [DATUM].
+
+Gemäß unseren AGB fallen folgende Stornogebühren an:
+- Bei Absage innerhalb 48h vor Event: 70% des Auftragswertes
+- Bei Absage 3-5 Tage vorher: 30% des Auftragswertes
+- Bei Absage früher als 5 Tage: Keine Gebühren
+
+**Zu zahlender Betrag: € [BETRAG]**
+
+Wir bedauern die Absage und hoffen, Sie bei einer zukünftigen Veranstaltung bewirten zu dürfen.
+
+Mit freundlichen Grüßen,
+Ihr Jasmin Catering Team
+```
+
+### Kapazitätsabsage
+```
+Betreff: Leider keine Kapazität für Ihr Event
+
+Sehr geehrte/r [KUNDE],
+
+vielen Dank für Ihre Anfrage. Leider müssen wir Ihnen mitteilen, dass wir für den [DATUM] bereits ausgebucht sind.
+
+Gerne können wir Ihnen folgende Alternativen anbieten:
+- Alternative Termine in der gleichen Woche
+- Empfehlung eines befreundeten Caterers
+- Vormerkung für einen Ersatztermin
+
+Wir bedauern sehr, Ihnen nicht zusagen zu können und hoffen auf eine Zusammenarbeit bei einem anderen Anlass.
+
+Mit freundlichen Grüßen,
+Ihr Jasmin Catering Team
 ```

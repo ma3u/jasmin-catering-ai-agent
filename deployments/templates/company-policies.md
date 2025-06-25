@@ -1,92 +1,112 @@
-# Jasmin Catering Company Policies
+# Jasmin Catering - Unternehmensrichtlinien
 
-## Business Information
-- **Company Name:** Jasmin Catering
-- **Location:** Berlin, Germany
-- **Specialization:** Syrian Fusion Cuisine
-- **Service Area:** Berlin and surrounding areas (up to 50km)
-- **Primary Contact:** matthias.buchhorn@web.de
+## Preisgestaltung
 
-## Service Policies
+### Basis-Preisstruktur
+- **Mindestbestellwert**: € 250
+- **Mindestpersonenzahl**: 15 Personen
+- **Maximale Kapazität**: 500 Personen
 
-### Minimum Requirements
-- **Minimum Guests:** 15 persons
-- **Maximum Guests:** 500 persons
-- **Minimum Lead Time:** 
-  - Standard events: 7 days
-  - Large events (100+ guests): 14 days
-  - Express service: 24 hours (surcharge applies)
+### Package-Preise pro Person
+1. **Basis Package**: € 25-30 pro Person
+   - 3-4 Fingerfood-Varianten
+   - Grundgetränke (Wasser, Saft)
+   - Einfaches Dessert
 
-### Pricing Structure
-- **Basic Package:** Starting at 25 EUR per person
-- **Standard Package:** 35-45 EUR per person
-- **Premium Package:** 45-60 EUR per person
-- **Luxury Package:** 60+ EUR per person
-- **Express Service Surcharge:** 20% additional
+2. **Standard Package**: € 35-45 pro Person
+   - 5-6 Fingerfood-Varianten
+   - Erweiterte Getränkeauswahl
+   - 2 Dessert-Optionen
 
-### Payment Terms
-- **Deposit:** 30% upon booking confirmation
-- **Final Payment:** 7 days before event
-- **Accepted Methods:** Bank transfer, PayPal Business
-- **Cancellation Policy:**
-  - 14+ days before: Full refund minus 10% admin fee
-  - 7-13 days before: 50% refund
-  - Less than 7 days: No refund
+3. **Premium Package**: € 50-60+ pro Person
+   - 7+ Fingerfood-Varianten
+   - Vollständige Getränkeauswahl inkl. Wein
+   - 3+ Premium-Desserts
+   - Service-Personal inklusive
 
-## Menu Policies
+### Zusatzleistungen
+- **Service-Personal**: € 25/Stunde pro Person (min. 4 Stunden)
+- **Geschirr & Besteck**: € 3 pro Person
+- **Tischdecken**: € 15 pro Tisch
+- **Lieferung Berlin**: Kostenfrei ab € 500 Bestellwert
+- **Express-Zuschlag** (< 7 Tage): 20% Aufschlag
 
-### Dietary Accommodations
-- **Standard Options:** Vegetarian, Vegan, Gluten-free
-- **Allergy Management:** Full allergen disclosure available
-- **Halal:** All meat is halal-certified
-- **Special Diets:** Accommodated with 7 days notice
+## Service-Standards
 
-### Signature Offerings
-- **Humus with Love:** Our signature hummus varieties
-- **Malakieh:** Traditional Syrian dessert
-- **Live Cooking Stations:** Available for events 50+ guests
-- **Syrian Breakfast:** Special morning catering option
+### Qualitätsversprechen
+- 100% frische Zubereitung am Veranstaltungstag
+- Authentische syrische Rezepte
+- Hausgemachte Spezialitäten
+- Keine Verwendung von Fertigprodukten
 
-## Service Standards
+### Lieferzeiten
+- **Standard-Lieferung**: 30-60 Min. vor Veranstaltungsbeginn
+- **Aufbauzeit**: 30-45 Minuten
+- **Abholzeit**: Nach Vereinbarung (meist 2-3 Std. nach Event)
 
-### Delivery and Setup
-- **Delivery Window:** 1-2 hours before event
-- **Setup Time:** 30-60 minutes depending on size
-- **Service Staff:** 1 per 25 guests (minimum 2)
-- **Equipment:** Professional grade warming equipment
+### Hygiene-Standards
+- HACCP-zertifizierte Küche
+- Regelmäßige Gesundheitsprüfungen
+- Allergen-Kennzeichnung aller Speisen
+- Kühlkette wird durchgängig eingehalten
 
-### Quality Guarantees
-- **Fresh Preparation:** All food prepared within 24 hours
-- **Temperature Control:** Hot foods kept above 65°C
-- **Presentation:** Instagram-worthy buffet setups
-- **Sustainability:** Eco-friendly packaging options available
+## Buchungsbedingungen
 
-## Communication Guidelines
+### Vorlaufzeiten
+- **Ideal**: 2-4 Wochen vor Event
+- **Mindestens**: 7 Werktage
+- **Express** (< 7 Tage): Mit 20% Aufschlag möglich
 
-### Response Times
-- **Initial Inquiry:** Within 24 hours
-- **Quote Requests:** Within 48 hours
-- **Urgent Requests:** Within 4 hours (business hours)
-- **Language:** German (primary), English (secondary)
+### Zahlungsbedingungen
+- **Anzahlung**: 30% bei Auftragsbestätigung
+- **Restzahlung**: Innerhalb 4 Wochen nach Event
+- **Zahlungsmethoden**: Überweisung, Bar bei Lieferung
 
-### Professional Standards
-- Always use formal address (Sie) initially in German
-- Include all costs transparently
-- Provide detailed menu descriptions
-- Offer alternatives for dietary restrictions
-- Follow up after events for feedback
+### Stornierungsbedingungen
+- **Bis 5 Werktage vorher**: Kostenfrei
+- **3-4 Werktage vorher**: 30% des Auftragswertes
+- **48 Stunden vorher**: 70% des Auftragswertes
+- **Am Veranstaltungstag**: 100% des Auftragswertes
 
-## Special Services
+## Sonderkonditionen
 
-### Additional Options
-- **Event Planning:** Consultation available
-- **Rental Equipment:** Tables, chairs, linens
-- **Beverage Service:** Full bar options
-- **Entertainment:** DJ/musician referrals
-- **Decoration:** Basic decoration included, premium available
+### Rabatte
+- **Instagram-Rabatt**: 5% bei Story-Post mit @jasmin.catering
+- **Stammkunden**: Ab 3. Buchung 10% Rabatt
+- **Großaufträge** (> 200 Personen): Individuelle Preise
 
-### Seasonal Specials
-- **Summer:** Outdoor BBQ options
-- **Winter:** Warming soups and stews
-- **Ramadan:** Special Iftar menus
-- **Christmas:** Fusion holiday menus
+### Kostenlose Extras
+- **Menükarten**: Ab 50 Personen
+- **Allergen-Liste**: Immer inklusive
+- **Serviervorschläge**: Bei Premium-Package
+
+## Einschränkungen
+
+### Nicht im Service enthalten
+- Alkoholische Getränke (außer Wein im Premium-Package)
+- Tische und Stühle
+- Zelte oder Pavillons
+- Blumendekoration
+
+### Geografische Einschränkungen
+- **Kostenfreie Lieferung**: Innerhalb Berliner Ring
+- **Gegen Aufpreis**: Brandenburg (€ 50-100)
+- **Nicht möglich**: Außerhalb 50km Radius
+
+## Kommunikationsrichtlinien
+
+### Antwortzeiten
+- **E-Mail**: Innerhalb 24 Stunden
+- **WhatsApp**: Innerhalb 4 Stunden (Mo-Sa 9-18 Uhr)
+- **Telefon**: Mo-Sa 9-18 Uhr
+
+### Angebotsgestaltung
+- Immer 3 Varianten anbieten
+- Transparente Preisaufschlüsselung
+- Klare Leistungsbeschreibung
+- Persönliche Ansprache
+
+### Follow-Up
+- **Nach Angebotsversand**: Nach 3 Tagen
+- **Nach Event**: Feedback-Anfrage nach 1 Woche
+- **Newsletter**: Monatlich mit saisonalen Angeboten

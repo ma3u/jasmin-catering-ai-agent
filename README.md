@@ -194,27 +194,56 @@ Main Logic App workflow that:
 
 ---
 
-## 🤖 **AI Service: Azure AI Foundry**
+## 🤖 **AI Service: Azure AI Foundry with OpenAI Assistant**
 
-We use **Azure AI Foundry** for AI capabilities:
+We use **Azure AI Foundry** with OpenAI Assistant API for intelligent email processing:
 
-1. **Unified Platform**: AI Foundry provides a comprehensive AI development platform
-2. **Project Management**: Organized AI resources under the `jasmin-catering` project
-3. **Model Access**: Direct access to GPT-4 and other models
-4. **Integration**: Seamless integration with other Azure AI services
+### **Assistant Integration**
+- **Assistant ID**: `asst_MN5PHipyHYPXyq3fENx7V20j`
+- **Purpose**: Specialized catering inquiry processing
+- **Language**: German (Deutsch)
+- **Features**: Pre-configured knowledge, consistent formatting, conversation threads
 
-**Technical Details:**
+### **How It Works**
+1. **Thread Creation**: Each email creates a new conversation thread
+2. **Message Processing**: Customer inquiry added to thread
+3. **Assistant Run**: Assistant processes the inquiry with RAG
+4. **Response Generation**: Professional German catering offer created
+5. **Draft Storage**: Response saved with thread and run IDs
+
+### **Assistant Configuration**
+The assistant is configured with a comprehensive prompt and RAG knowledge base:
+
+```bash
+# Configure assistant with prompt and documents
+python deployments/scripts/configure-assistant.py
+```
+
+This uploads:
+- Business process documentation
+- Complete menu catalog with prices
+- Email templates and examples
+- Company policies and terms
+
+See `deployments/ASSISTANT_CONFIGURATION.md` for details.
+
+### **Technical Details:**
 - **AI Project**: jasmin-catering
 - **Resource**: jasmin-catering-resource (AI Services)
-- **Endpoint**: The AI Foundry project uses the underlying AI Services endpoint
-- **API Format**: OpenAI-compatible REST API
+- **API Version**: 2024-02-01
+- **Endpoints Used**:
+  - `/openai/threads` - Create conversation threads
+  - `/openai/threads/{id}/messages` - Add messages
+  - `/openai/threads/{id}/runs` - Execute assistant
+  - `/openai/threads/{id}/messages` - Retrieve responses
 
-**Endpoint Format:**
-```
-https://jasmin-catering-resource.cognitiveservices.azure.com/openai/deployments/gpt-4o/chat/completions
-```
+### **Benefits of Assistant API**:
+- **Context Preservation**: Maintains conversation history
+- **Consistent Responses**: Pre-configured assistant personality
+- **Thread Management**: Organized conversation tracking
+- **Future Extensibility**: Easy follow-up message handling
 
-*Note: AI Foundry projects utilize AI Services infrastructure, which is why the endpoint appears as a Cognitive Services URL. This is the standard Azure AI architecture.*
+For detailed Assistant API documentation, see: `deployments/ASSISTANT_API_INTEGRATION.md`
 
 ---
 
