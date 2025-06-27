@@ -1,0 +1,11 @@
+{
+    "AIFoundryApiKey": {
+        "value": "YOUR_AI_FOUNDRY_API_KEY"
+    },
+    "TeamsChannelId": {
+        "value": "YOUR_TEAMS_CHANNEL_ID"
+    },
+    "StorageAccountName": {
+        "value": "jasmincateringstorage"
+    }
+}
