@@ -2,23 +2,35 @@
 
 This directory contains Infrastructure as Code (IaC) using Terraform to deploy the Jasmin Catering AI Agent to Azure.
 
+## ⚠️ Status: Alternative Deployment Method
+
+**Current Working Solution**: Shell scripts in `../scripts/`
+- ✅ `deploy-main.sh` - Fully functional
+- ✅ `deploy-ai-foundry.sh` - AI Foundry specific
+
+**This Terraform**: Alternative IaC approach
+- 📋 Complete infrastructure definition
+- 🔄 Not actively used but maintained
+- 🛠️ Ready for production IaC adoption
+
 ## Prerequisites
 
 - Terraform >= 1.0
-- Azure CLI installed and authenticated
+- Azure CLI installed and authenticated: `az login`
 - Azure subscription with appropriate permissions
 
 ## Quick Start
 
 1. **Initialize Terraform**
    ```bash
+   cd deployments/terraform
    terraform init
    ```
 
 2. **Copy and configure variables**
    ```bash
    cp terraform.tfvars.example terraform.tfvars
-   # Edit terraform.tfvars with your values
+   # Edit terraform.tfvars with your actual values
    ```
 
 3. **Plan the deployment**
@@ -118,8 +130,20 @@ terraform destroy
 
 ## Migration from Shell Scripts
 
-This Terraform configuration replaces the shell script deployment in `deployments/scripts/`. Benefits include:
+This Terraform configuration provides an alternative to the shell script deployment in `deployments/scripts/`. Benefits include:
 - Declarative infrastructure
 - State management
-- Easy rollback
+- Easy rollback and disaster recovery
 - Better collaboration
+
+## Current Production Setup
+
+**Active Logic App**: `jasmin-order-processor-sweden`
+**Agent ID**: `asst_xaWmWbwVkjLslHiRrg9teIP0`
+**Location**: Sweden Central
+**Deployment Method**: Shell scripts (fully functional)
+
+To migrate to Terraform:
+1. Import existing resources with `terraform import`
+2. Plan changes carefully to avoid service disruption
+3. Test thoroughly in non-production environment first

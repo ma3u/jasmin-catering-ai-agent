@@ -518,7 +518,8 @@ Shows example of generated email drafts including:
 - [AI Agent for Beginners](https://github.com/microsoft/ai-agents-for-beginners)
 - [Getting started with AI Agents](https://github.com/Azure-Samples/get-started-with-ai-agents)
 - [Azure AI SDK Samples Python](https://github.com/Azure/azure-sdk-for-python/blob/main/sdk/ai/azure-ai-agents/samples/)
-
+- [Build your code-first agent with Azure AI Foundry](https://microsoft.github.io/build-your-first-agent-with-azure-ai-agent-service-workshop/)
+  
 ---
 
 ## 🛠️ **Troubleshooting**
