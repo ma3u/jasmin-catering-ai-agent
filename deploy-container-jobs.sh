@@ -23,8 +23,8 @@ if ! az account show &> /dev/null; then
 fi
 echo "✅ Azure CLI authenticated"
 
-# Build and push updated Docker image (without Flask)
-echo "2. Building and pushing updated Docker image..."
+# Build and push updated Docker image with enhanced RAG
+echo "2. Building and pushing updated Docker image with enhanced RAG..."
 az acr build \
     --registry $ACR_NAME \
     --image $IMAGE_NAME:latest \
