@@ -4,6 +4,10 @@ An intelligent, cloud-native email processing system powered by **Azure OpenAI A
 
 ## 🏗️ Cloud Architecture
 
+For comprehensive architectural details, see our [detailed diagrams](docs/diagrams/):
+- 📊 [Complete System Architecture](docs/diagrams/system-architecture.md)
+- 🔄 [Sequential Workflow](docs/diagrams/sequential-workflow.md)
+
 ```mermaid
 graph TB
     subgraph "Azure Cloud Environment"
@@ -12,7 +16,7 @@ graph TB
         end
         
         subgraph "AI Services"
-            AOI[Azure OpenAI Assistant<br/>GPT-4o Model<br/>Vector Store RAG]
+            AOI[Azure OpenAI Assistant<br/>GPT-4.1 Model<br/>Vector Store RAG]
             VS[Vector Store<br/>AssistantVectorStore_Jasmin<br/>6 Knowledge Documents]
         end
         
@@ -216,7 +220,7 @@ flowchart TD
 # Clone and deploy Container Apps Jobs
 git clone <repository-url>
 cd jasmin-catering-ai-agent
-./deploy-container-jobs.sh
+./scripts/deployment/deploy-container-jobs.sh
 ```
 
 ### Management Commands
@@ -341,19 +345,37 @@ docker run -p 8000:8000 \
   jasmin-catering-ai
 ```
 
-### Code Structure
+### Project Structure
 ```
 jasmin-catering-ai-agent/
-├── config/
-│   └── settings.py              # Centralized configuration
-├── core/
-│   ├── email_processor.py       # IMAP/SMTP email handling
-│   ├── ai_assistant.py          # Azure OpenAI + RAG
-│   └── slack_notifier.py        # Slack integration
-├── main.py                      # Application entry point
-├── Dockerfile                   # Container definition
-├── requirements.txt             # Python dependencies
-└── deploy-to-azure.sh          # Deployment automation
+├── 📁 config/
+│   └── settings.py                     # Centralized configuration
+├── 📁 core/
+│   ├── email_processor.py              # IMAP/SMTP email handling
+│   ├── ai_assistant_openai_agent.py    # Enhanced RAG AI Assistant
+│   └── slack_notifier.py               # Slack integration
+├── 📁 deployments/
+│   ├── documents/                      # Knowledge base files
+│   ├── logic-apps/                     # Legacy Logic Apps workflows
+│   ├── scripts/                        # Deployment automation
+│   └── templates/                      # Configuration templates
+├── 📁 docs/
+│   ├── diagrams/                       # Architecture & workflow diagrams
+│   ├── azure-ai-agent-deployment.md   # AI deployment guide
+│   └── enhanced-rag-system.md         # RAG system documentation
+├── 📁 scripts/
+│   ├── deployment/                     # Azure deployment scripts
+│   ├── testing/                        # Test suites & results
+│   ├── utilities/                      # Helper scripts
+│   └── archive/                        # Unused/deprecated scripts
+├── 📁 utils/
+│   └── send_test_emails.py             # Email testing utilities
+├── 📄 main.py                          # Application entry point
+├── 📄 agent-config.json                # AI Assistant configuration
+├── 📄 Dockerfile                       # Container definition
+├── 📄 requirements.txt                 # Python dependencies
+├── 📄 CLAUDE.md                        # AI development guide
+└── 📄 README.md                        # Project documentation
 ```
 
 ## 🚀 Deployment
