@@ -61,17 +61,6 @@ env/
 *.backup
 *-old.*
 
-# Slack
-slack_notifier_old.py
-
-# Test outputs
-test-results/
-*.log
-
-# OS files
-.DS_Store
-Thumbs.db
-
 # Project specific
-/scripts/slack_notifier_old.py
 rag-processing-log.txt
+.env

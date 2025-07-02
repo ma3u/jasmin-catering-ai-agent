@@ -2,12 +2,14 @@
 """
 Main application for Jasmin Catering AI Agent
 Processes emails with AI + RAG + Slack notifications
+Optimized for Azure Container Apps Jobs
 """
 
 import time
+import os
 from datetime import datetime
 from core.email_processor import EmailProcessor
-from core.ai_assistant import JasminAIAssistant
+from core.ai_assistant_openai_agent import JasminAIAssistantOpenAI
 from core.slack_notifier import SlackNotifier
 from config.settings import BUSINESS_CONFIG
 
@@ -17,7 +19,7 @@ class JasminCateringApp:
     
     def __init__(self):
         self.email_processor = EmailProcessor()
-        self.ai_assistant = JasminAIAssistant()
+        self.ai_assistant = JasminAIAssistantOpenAI()
         self.slack = SlackNotifier()
         
     def run(self, test_mode: bool = False):
@@ -84,8 +86,8 @@ class JasminCateringApp:
                             print(f"📚 Used {len(documents)} RAG documents")
                             print(f"💰 Pricing: {info.get('pricing', {})}")
                             
-                            # Post to Slack
-                            self.slack.post_ai_response(email_data['subject'], info)
+                            # Post to Slack with full response
+                            self.slack.post_ai_response(email_data['subject'], info, response)
                         else:
                             error_count += 1
                             print("❌ Failed to send response")
@@ -93,6 +95,9 @@ class JasminCateringApp:
                     else:
                         error_count += 1
                         print("❌ Failed to generate AI response")
+                        # Post error to Slack with error info
+                        error_info = {"error": "AI response generation failed", "documents_used": 0, "processing_time": "N/A"}
+                        self.slack.post_ai_response(email_data['subject'], error_info)
                         self.slack.log(f"AI generation failed for: {email_data['subject']}", "error")
                         
                 except Exception as e:
@@ -121,10 +126,16 @@ class JasminCateringApp:
 
 
 def main():
-    """Entry point"""
+    """Entry point - runs email processing once"""
+    print("🚀 Starting Jasmin Catering AI Agent (Container Apps Jobs)")
+    
     app = JasminCateringApp()
-    app.run(test_mode=True)
-
+    
+    # Determine if running in production based on environment
+    is_production = os.getenv('AZURE_CONTAINER_APPS') == 'true'
+    app.run(test_mode=not is_production)
+    
+    print("✅ Email processing completed")
 
 if __name__ == "__main__":
     main()

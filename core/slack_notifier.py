@@ -1,5 +1,5 @@
 """
-Simplified Slack notifier for Jasmin Catering
+Enhanced Slack notifier for Jasmin Catering with full response text
 """
 
 import requests
@@ -10,7 +10,7 @@ from config.settings import SLACK_CONFIG
 
 
 class SlackNotifier:
-    """Handle Slack notifications"""
+    """Handle Slack notifications with full message content"""
     
     def __init__(self):
         self.token = SLACK_CONFIG['bot_token']
@@ -48,8 +48,11 @@ class SlackNotifier:
         
         return self._post_message(self.email_channel, "📧 New Catering Inquiry", blocks)
     
-    def post_ai_response(self, email_subject: str, response_info: Dict[str, Any]) -> bool:
-        """Post AI response to Slack"""
+    def post_ai_response(self, email_subject: str, response_info: Dict[str, Any], 
+                        full_response_text: str = None) -> bool:
+        """Post AI response to Slack with full response text"""
+        
+        # Main response info
         blocks = [
             {
                 "type": "header",
@@ -69,9 +72,37 @@ class SlackNotifier:
         # Add pricing if available
         if response_info.get('pricing'):
             pricing_text = "\n".join([f"• {pkg}: {price}" for pkg, price in response_info['pricing'].items()])
+            if pricing_text.strip():  # Only add if there's actual pricing
+                blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": f"*Pricing Offered:*\n{pricing_text}"}
+                })
+        
+        # Add full response text if provided
+        if full_response_text:
+            # Split long responses into chunks (Slack has a 3000 char limit per block)
+            response_chunks = self._split_text(full_response_text, 2800)
+            
+            for i, chunk in enumerate(response_chunks):
+                if i == 0:
+                    blocks.append({
+                        "type": "section",
+                        "text": {"type": "mrkdwn", "text": f"*Full AI Response:*\n```{chunk}```"}
+                    })
+                else:
+                    blocks.append({
+                        "type": "section",
+                        "text": {"type": "mrkdwn", "text": f"```{chunk}```"}
+                    })
+        
+        # Add error message if response is missing
+        elif 'error' in response_info:
             blocks.append({
                 "type": "section",
-                "text": {"type": "mrkdwn", "text": f"*Pricing Offered:*\n{pricing_text}"}
+                "text": {
+                    "type": "mrkdwn",
+                    "text": f"*❌ Error:* {response_info['error']}"
+                }
             })
         
         return self._post_message(self.email_channel, "🤖 AI Response Generated", blocks)
@@ -88,12 +119,38 @@ class SlackNotifier:
         ]
         
         if details:
-            blocks.append({
-                "type": "section",
-                "text": {"type": "mrkdwn", "text": f"```{json.dumps(details, indent=2, ensure_ascii=False)}```"}
-            })
+            details_text = json.dumps(details, indent=2, ensure_ascii=False)
+            # Split large details into chunks
+            details_chunks = self._split_text(details_text, 2800)
+            
+            for chunk in details_chunks:
+                blocks.append({
+                    "type": "section",
+                    "text": {"type": "mrkdwn", "text": f"```{chunk}```"}
+                })
         
         return self._post_message(self.log_channel, message, blocks)
+    
+    def _split_text(self, text: str, max_length: int) -> list:
+        """Split text into chunks that fit Slack's limits"""
+        if len(text) <= max_length:
+            return [text]
+        
+        chunks = []
+        current_chunk = ""
+        
+        for line in text.split('\n'):
+            if len(current_chunk) + len(line) + 1 <= max_length:
+                current_chunk += line + '\n'
+            else:
+                if current_chunk:
+                    chunks.append(current_chunk.rstrip())
+                current_chunk = line + '\n'
+        
+        if current_chunk:
+            chunks.append(current_chunk.rstrip())
+        
+        return chunks
     
     def _post_message(self, channel: str, text: str, blocks: list) -> bool:
         """Post message to Slack channel"""
@@ -103,7 +160,13 @@ class SlackNotifier:
                 headers=self.headers,
                 json={'channel': channel, 'text': text, 'blocks': blocks}
             )
-            return response.json().get('ok', False)
+            result = response.json()
+            
+            if not result.get('ok'):
+                print(f"Slack API error: {result.get('error', 'Unknown error')}")
+                return False
+                
+            return True
         except Exception as e:
             print(f"Slack error: {e}")
             return False
