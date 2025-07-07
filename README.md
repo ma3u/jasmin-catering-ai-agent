@@ -2,88 +2,51 @@
 
 An intelligent, cloud-native email processing system powered by **Azure OpenAI Assistant with Vector Store RAG**. The system automatically responds to catering inquiries using advanced AI with comprehensive knowledge base integration, generates professional catering offers in German, and provides real-time Slack monitoring.
 
-## 📋 Table of Contents
-
-- [🏗️ System Architecture](#️-system-architecture)
-  - [Cloud Architecture Overview](#cloud-architecture-overview)
-  - [Email Processing Workflow](#email-processing-workflow)
-  - [Cost-Effective Architecture](#cost-effective-architecture)
-  - [Deployment Pipeline](#deployment-pipeline)
-- [🤖 Azure AI Foundry Assistants](#-azure-ai-foundry-assistants)
-- [🚀 Quick Start](#-quick-start)
-- [🏢 Azure Resources](#-azure-resources)
-- [🔐 Security Configuration](#-security-configuration)
-- [📊 Monitoring & Observability](#-monitoring--observability)
-- [🔧 Development](#-development)
-- [🚀 Deployment](#-deployment)
-- [🧪 Testing](#-testing)
-- [🔧 Troubleshooting](#-troubleshooting)
-- [📈 Scaling & Performance](#-scaling--performance)
-- [🎯 Project Status](#-project-status)
-- [🤝 Contributing](#-contributing)
-- [📄 License](#-license)
-
-## 🏗️ System Architecture
-
-### Cloud Architecture Overview
-
-This diagram illustrates the complete cloud infrastructure deployed on Azure, showing how different services interact to process catering inquiries automatically. The system uses Container Apps Jobs for serverless compute, Azure OpenAI Assistant for intelligent responses, and integrates with external services for email and Slack notifications.
+## 🏗️ Cloud Architecture
 
 For comprehensive architectural details, see our [detailed diagrams](docs/diagrams/):
 - 📊 [Complete System Architecture](docs/diagrams/system-architecture.md)
 - 🔄 [Sequential Workflow](docs/diagrams/sequential-workflow.md)
 
 ```mermaid
-graph TB
-    subgraph "Azure Cloud Environment"
-        subgraph "Compute Layer"
-            CJ[Container Apps Job<br/>Cron Schedule<br/>Every 5 minutes]
-        end
-        
-        subgraph "AI Services"
-            AOI[Azure OpenAI Assistant<br/>GPT-4.1 Model<br/>Vector Store RAG]
-            VS[Vector Store<br/>AssistantVectorStore_Jasmin<br/>6 Knowledge Documents]
-        end
-        
-        subgraph "Storage & Security"
-            KV[Key Vault<br/>Secrets Management]
-            ACR[Container Registry<br/>Docker Images]
-        end
-    end
-    
-    subgraph "External Services"
-        EMAIL[Email System<br/>IMAP/SMTP<br/>web.de]
-        SLACK[Slack Workspace<br/>Notifications<br/>Monitoring]
-        CUSTOMER[Customer Email<br/>Catering Inquiries]
-    end
-    
-    %% Workflow Connections
-    CJ -->|Fetch Emails| EMAIL
+graph LR
+    %% Azure Cloud Environment (left)
+    ACR[Container Registry<br/>Docker Images]
+    KV[Key Vault<br/>Secrets Management]
+    CJ[Container Apps Job<br/>Cron Schedule<br/>Every 5 minutes]
+    AOI[Azure OpenAI Assistant<br/>GPT-4.1 Model<br/>Vector Store RAG]
+    VS[Vector Store<br/>AssistantVectorStore_Jasmin<br/>6 Knowledge Documents]
+
+    %% External Services (right)
+    EMAIL[Email System<br/>IMAP/SMTP<br/>web.de]
+    SLACK[Slack Workspace<br/>Notifications<br/>Monitoring]
+    CUSTOMER[Customer Email<br/>Catering Inquiries]
+
+    %% Workflow Connections (left to right)
+    ACR -.->|Pull Image| CJ
+    KV -->|Get Secrets| CJ
     CJ -->|AI Processing| AOI
     AOI -->|Search Knowledge| VS
     VS -->|Return Context| AOI
-    CJ -->|Get Secrets| KV
+    CJ -->|Fetch Emails| EMAIL
     CJ -->|Send Response| EMAIL
     CJ -->|Post Updates| SLACK
     CUSTOMER -->|Send Inquiry| EMAIL
     EMAIL -->|Auto Response| CUSTOMER
-    
-    %% Deployment Connections
-    ACR -.->|Pull Image| CJ
-    
+
     %% Styling
     classDef azure fill:#0078d4,stroke:#005a9e,stroke-width:2px,color:#fff
     classDef external fill:#28a745,stroke:#1e7e34,stroke-width:2px,color:#fff
     classDef storage fill:#6f42c1,stroke:#563d7c,stroke-width:2px,color:#fff
-    
+
     class CJ,AOI,VS azure
     class EMAIL,SLACK,CUSTOMER external
     class KV,ACR storage
+
+
 ```
 
-### Email Processing Workflow
-
-The following sequence diagram shows the step-by-step process of how emails are processed. Every 5 minutes, the Container Apps Job wakes up, fetches emails from the configured inbox, processes them using Azure OpenAI Assistant with Vector Store RAG, and sends professional responses back to customers while notifying the team via Slack.
+## 🔄 Email Processing Workflow
 
 ```mermaid
 sequenceDiagram
@@ -123,9 +86,7 @@ sequenceDiagram
     Note over CJ: Scale to zero
 ```
 
-### Cost-Effective Architecture
-
-This diagram breaks down the monthly costs of running the system. By using serverless Container Apps Jobs that scale to zero when idle, we achieve a 48% cost reduction compared to traditional architectures. The total monthly cost ranges from $55-96, making it highly cost-effective for small to medium businesses.
+## 💰 Cost-Effective Cloud Architecture
 
 ```mermaid
 graph LR
@@ -164,9 +125,7 @@ graph LR
     class KV2,ACR2 storage
 ```
 
-### Deployment Pipeline
-
-The deployment architecture shows the complete CI/CD pipeline from local development to production. Code is containerized using Docker, pushed to Azure Container Registry, and deployed to Container Apps. The system includes comprehensive monitoring through Application Insights and health checks for reliability.
+## 🚀 Deployment Architecture
 
 ```mermaid
 flowchart TD
@@ -227,21 +186,17 @@ flowchart TD
     class API1,API2,API3 external
 ```
 
-## 🤖 Azure AI Foundry Assistants
+## 📋 Table of Contents
 
-![AI Assistant Demo](pictures/AIAssistent2.gif)
-
-The system leverages Azure AI Foundry's powerful Assistant capabilities with Vector Store RAG for intelligent email processing and response generation. The assistant has access to 6 comprehensive knowledge documents about Jasmin Catering's services, pricing, and policies, enabling it to provide accurate and contextual responses to customer inquiries.
-
-### Key Features:
-- **Vector Store RAG**: Semantic search through business knowledge documents
-- **GPT-4o Model**: Advanced language understanding and generation
-- **File Search Tool**: Ability to search and retrieve relevant information
-- **German Language Support**: Native German responses for local customers
-- **Context-Aware Responses**: Personalized offers based on event requirements
-
-### 📊 Development Journey
-Check out our presentation: [**From Zero to Hero: AI-Powered Development**](https://gamma.app/docs/From-Zero-to-Hero-AI-Powered-Development-zf0bapu4b31bn5h) - showcasing how we built this system using AI-assisted development with Claude.
+- [🚀 Quick Start](#-quick-start)
+- [🏢 Azure Resources](#-azure-resources)
+- [🔐 Security Configuration](#-security-configuration)
+- [📊 Monitoring & Observability](#-monitoring--observability)
+- [🔧 Development](#-development)
+- [🚀 Deployment](#-deployment)
+- [🧪 Testing](#-testing)
+- [🔧 Troubleshooting](#-troubleshooting)
+- [📈 Scaling & Performance](#-scaling--performance)
 
 ## 🚀 Quick Start
 
@@ -298,64 +253,13 @@ python -c "from core.ai_assistant_openai_agent import JasminAIAssistantOpenAI; p
 **Cost Optimization**: 48% reduction with enhanced AI Assistant + Vector Store RAG
 
 ### Key Vault Secrets
-
-**Azure Key Vault**: `jasmin-catering-kv` | **URI**: `https://jasmin-catering-kv.vault.azure.net/`
-
-All sensitive configuration is securely stored in Azure Key Vault. The following secrets are available:
-
 ```bash
-# Azure Configuration
-azure-subscription-id                   # Azure subscription identifier
-azure-tenant-id                         # Azure AD tenant ID
-azure-user-email                        # Azure user email for notifications
-
-# Email Configuration  
-from-email-address                      # Sender email (matthias.buchhorn@web.de)
-from-email-password                     # SMTP authentication password
-webde-app-password                      # Web.de app-specific password
-
-# OpenAI Configuration
-openai-api-key                          # Azure OpenAI API key
-openai-endpoint                         # Azure OpenAI endpoint URL
-
-# Slack Integration
-slack-app-id                            # Slack application ID
-slack-bot-token                         # Slack bot OAuth token
-slack-channel-emailrequestsandresponse  # Channel ID for email notifications
-slack-channel-jasminlogs                # Channel ID for system logs
-slack-client-id                         # Slack OAuth client ID
-slack-client-secret                     # Slack OAuth client secret
-slack-signing-secret                    # Slack request signing secret
-slack-verification-token                # Slack verification token
-```
-
-**Access Secrets via Azure CLI:**
-```bash
-# List all secrets
-az keyvault secret list --vault-name jasmin-catering-kv
-
-# Get a specific secret value
-az keyvault secret show --vault-name jasmin-catering-kv --name openai-api-key --query value -o tsv
-
-# Set/Update a secret
-az keyvault secret set --vault-name jasmin-catering-kv --name secret-name --value "secret-value"
-```
-
-### Local Development Secrets Backup
-
-**1Password Vault**: `JasminCatering`
-
-Local `.env` files are backed up to 1Password for secure storage and team sharing:
-
-```bash
-# Backup .env to 1Password
-./scripts/backup-env-simple.sh
-
-# Restore .env from 1Password
-op document get 'jasmin-catering-env-YYYY-MM-DD_HH-MM-SS' --vault 'JasminCatering' > .env
-
-# List all backups
-op document list --vault 'JasminCatering' --tags 'env'
+# Essential secrets stored securely
+azure-ai-api-key          # OpenAI service authentication
+webde-app-password        # Email SMTP authentication  
+slack-bot-token          # Slack integration
+slack-channel-id         # Email notifications channel
+slack-log-channel-id     # System logs channel
 ```
 
 ## 🔐 Security Configuration
@@ -517,71 +421,6 @@ python test-email-flow.py
 python load-test-ai-responses.py
 ```
 
-### Test Scripts & Utilities
-
-#### 📧 Send Test Email
-```bash
-# Send a test catering inquiry to ma3u-test@email.de
-python scripts/send-test-email.py
-
-# This script:
-# - Sends a realistic German catering inquiry
-# - Includes detailed event requirements
-# - Tests the full email processing pipeline
-# - Verifies email delivery to the configured alias
-```
-
-#### 🔔 Test Slack Notifications
-```bash
-# Test Slack integration without sending emails
-python scripts/test-slack-notification.py
-
-# This script:
-# - Posts a simulated long email to Slack
-# - Verifies the full message is displayed (not truncated)
-# - Tests message formatting and chunking
-# - Validates Slack API connectivity
-```
-
-#### 🔐 Backup .env to 1Password
-```bash
-# Backup local .env file to 1Password vault
-./scripts/backup-env-simple.sh
-
-# This script:
-# - Creates a timestamped backup in JasminCatering vault
-# - Stores the complete .env file as a document
-# - Provides easy restore commands
-# - Ensures secure team sharing of credentials
-
-# Restore from backup:
-op document get 'jasmin-catering-env-YYYY-MM-DD_HH-MM-SS' --vault 'JasminCatering' > .env
-```
-
-#### 📊 Check Email Processing
-```bash
-# Verify if emails were received and processed
-python scripts/check-email-processing.py
-
-# This script:
-# - Connects to the email inbox
-# - Lists recent catering emails
-# - Identifies test emails by subject
-# - Confirms email filtering is working correctly
-```
-
-#### 🔍 Monitor Container Logs
-```bash
-# Check Azure Container Apps execution logs
-./scripts/check-container-logs.sh
-
-# This script:
-# - Shows recent job executions
-# - Displays container logs
-# - Searches for specific email processing
-# - Provides alternative monitoring methods
-```
-
 ### Cloud Testing
 ```bash
 # Health check
@@ -607,6 +446,22 @@ graph LR
     classDef test fill:#28a745,stroke:#1e7e34,stroke-width:2px,color:#fff
     class T1,T2,T3,T4,T5,T6 test
 ```
+
+## 🤖 Azure AI Foundry Assistants
+
+![AI Assistant Demo](pictures/AIAssistent2.gif)
+
+The system leverages Azure AI Foundry's powerful Assistant capabilities with Vector Store RAG for intelligent email processing and response generation. The assistant has access to 6 comprehensive knowledge documents about Jasmin Catering's services, pricing, and policies, enabling it to provide accurate and contextual responses to customer inquiries.
+
+### Key Features:
+- **Vector Store RAG**: Semantic search through business knowledge documents
+- **GPT-4o Model**: Advanced language understanding and generation
+- **File Search Tool**: Ability to search and retrieve relevant information
+- **German Language Support**: Native German responses for local customers
+- **Context-Aware Responses**: Personalized offers based on event requirements
+
+### 📊 Development Journey
+Check out our presentation: [**From Zero to Hero: AI-Powered Development**](https://gamma.app/docs/From-Zero-to-Hero-AI-Powered-Development-zf0bapu4b31bn5h) - showcasing how we built this system using AI-assisted development with Claude.
 
 ## 🔧 Troubleshooting
 
