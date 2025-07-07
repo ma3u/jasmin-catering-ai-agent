@@ -36,15 +36,30 @@ class SlackNotifier:
                     {"type": "mrkdwn", "text": f"*Time:* {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}"},
                     {"type": "mrkdwn", "text": f"*ID:* {email_data.get('id', 'N/A')}"}
                 ]
-            },
-            {
-                "type": "section",
-                "text": {
-                    "type": "mrkdwn",
-                    "text": f"*Message:*\n```{email_data['body'][:500]}...```"
-                }
             }
         ]
+        
+        # Add full email body, split into chunks if needed
+        email_body = email_data['body']
+        body_chunks = self._split_text(email_body, 2800)
+        
+        for i, chunk in enumerate(body_chunks):
+            if i == 0:
+                blocks.append({
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"*Message:*\n```{chunk}```"
+                    }
+                })
+            else:
+                blocks.append({
+                    "type": "section",
+                    "text": {
+                        "type": "mrkdwn",
+                        "text": f"```{chunk}```"
+                    }
+                })
         
         return self._post_message(self.email_channel, "📧 New Catering Inquiry", blocks)
     

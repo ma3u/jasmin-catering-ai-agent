@@ -25,8 +25,9 @@ class EmailProcessor:
         self.alias = EMAIL_CONFIG['alias']
         
     def fetch_catering_emails(self, limit: int = 5) -> List[Dict]:
-        """Fetch recent catering-related emails"""
+        """Fetch recent UNSEEN catering-related emails"""
         emails = []
+        processed_email_ids = []
         
         try:
             # Connect to IMAP
@@ -34,9 +35,9 @@ class EmailProcessor:
             mail.login(self.email_address, self.password)
             mail.select('inbox')
             
-            # Search for today's emails sent TO the alias
-            today = datetime.now().strftime("%d-%b-%Y")
-            status, messages = mail.search(None, f'(TO "{self.alias}") (SINCE "{today}")')
+            # Search for UNSEEN emails sent TO the alias
+            # This prevents processing the same email multiple times
+            status, messages = mail.search(None, f'(UNSEEN) (TO "{self.alias}")')
             
             if status == 'OK':
                 email_ids = messages[0].split()
@@ -52,6 +53,13 @@ class EmailProcessor:
                         # Extract subject
                         subject = self._decode_subject(email_message['Subject'])
                         
+                        # Skip response emails (already processed)
+                        if subject.startswith('Re:') or subject.startswith('RE:'):
+                            print(f"⏭️  Skipping response email: {subject}")
+                            # Mark as seen anyway to avoid reprocessing
+                            mail.store(email_id, '+FLAGS', '\\Seen')
+                            continue
+                        
                         # Extract body
                         body = self._extract_body(email_message)
                         
@@ -64,6 +72,14 @@ class EmailProcessor:
                                 'from': email_message['From'],
                                 'date': email_message['Date']
                             })
+                            processed_email_ids.append(email_id)
+                        else:
+                            # Mark non-catering emails as seen to avoid reprocessing
+                            mail.store(email_id, '+FLAGS', '\\Seen')
+                
+                # Mark all processed catering emails as SEEN after successful processing
+                # This happens in mark_emails_as_processed() method
+                self._temp_email_ids = processed_email_ids
             
             mail.close()
             mail.logout()
@@ -74,8 +90,8 @@ class EmailProcessor:
         return emails
     
     def send_response(self, to_address: str, subject: str, response_text: str, 
-                     rag_documents: List[Dict] = None) -> bool:
-        """Send email response"""
+                     rag_documents: List[Dict] = None, original_email: Dict = None) -> bool:
+        """Send email response with original request appended"""
         try:
             msg = MIMEMultipart()
             msg['From'] = self.alias
@@ -91,6 +107,17 @@ class EmailProcessor:
             
             # Add signature
             response_text += f"\n\n--\nMit freundlichen Grüßen\nIhr Jasmin Catering Team\n{self.alias}"
+            
+            # Add original request at the end
+            if original_email:
+                response_text += "\n\n" + "="*60 + "\n"
+                response_text += "URSPRÜNGLICHE ANFRAGE\n"
+                response_text += "="*60 + "\n"
+                response_text += f"Von: {original_email.get('from', 'Unbekannt')}\n"
+                response_text += f"Datum: {original_email.get('date', 'Unbekannt')}\n"
+                response_text += f"Betreff: {original_email.get('subject', 'Kein Betreff')}\n"
+                response_text += "-"*60 + "\n"
+                response_text += original_email.get('body', 'Kein Inhalt')
             
             msg.attach(MIMEText(response_text, 'plain'))
             
@@ -144,3 +171,23 @@ class EmailProcessor:
         
         text = (subject + " " + body).lower()
         return any(keyword in text for keyword in keywords)
+    
+    def mark_email_as_processed(self, email_id: str) -> bool:
+        """Mark an email as SEEN to prevent reprocessing"""
+        try:
+            mail = imaplib.IMAP4_SSL(self.imap_server, self.imap_port)
+            mail.login(self.email_address, self.password)
+            mail.select('inbox')
+            
+            # Mark email as SEEN
+            mail.store(email_id.encode(), '+FLAGS', '\\Seen')
+            
+            mail.close()
+            mail.logout()
+            
+            print(f"✅ Marked email {email_id} as processed")
+            return True
+            
+        except Exception as e:
+            print(f"❌ Error marking email as processed: {e}")
+            return False

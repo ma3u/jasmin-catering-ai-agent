@@ -77,7 +77,8 @@ class JasminCateringApp:
                             self.email_processor.email_address,
                             email_data['subject'],
                             response,
-                            documents
+                            documents,
+                            email_data  # Pass original email data
                         )
                         
                         if success:
@@ -85,6 +86,9 @@ class JasminCateringApp:
                             print(f"✅ Response sent successfully")
                             print(f"📚 Used {len(documents)} RAG documents")
                             print(f"💰 Pricing: {info.get('pricing', {})}")
+                            
+                            # Mark email as processed to prevent duplicate processing
+                            self.email_processor.mark_email_as_processed(email_data['id'])
                             
                             # Post to Slack with full response
                             self.slack.post_ai_response(email_data['subject'], info, response)
